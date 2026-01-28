@@ -1213,9 +1213,9 @@ export default function VibrantOnboarding() {
   const [showDemoDashboard, setShowDemoDashboard] = useState(false);
   const [showWearableSetup, setShowWearableSetup] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
+    firstName: 'Demo',
+    lastName: 'User',
+    email: 'demo@vibrant.com',
   });
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedDate, setSelectedDate] = useState(5);
