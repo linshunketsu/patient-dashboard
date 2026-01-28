@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import foundationZoomerData from '../data/foundation-zoomer-data.json';
+import ReferenceRangeIndicator from './ReferenceRangeIndicator.jsx';
+import { getReferenceRange, calculateStatus } from '../data/reference-ranges-config.js';
 
 // Theme tokens matching the dashboard
 const theme = {
@@ -132,54 +134,42 @@ const processFoundationData = (data) => {
 // Generate demo values for markers
 const generateDemoValues = (markers, baseScore, applyDemoScores) => {
   return markers.map((marker, index) => {
+    // Get reference range configuration for this marker
+    const rangeConfig = getReferenceRange(marker.name);
+    const { min, max, optimalMin, optimalMax, invertOptimal } = rangeConfig;
+
     // Only apply demo low/high scores for foundation zoomer (~30% non-optimal for demo)
     const isDemoLowScore = applyDemoScores && index === 2;
     const isDemoHighScore = applyDemoScores && index === 4;
 
-    let status, value, trend;
-    const randomFactor = (index % 3) / 3; // 0, 0.33, 0.66
+    let value, status, trend;
 
-    // Demo status only applies to foundation zoomer
     if (isDemoLowScore) {
+      // Value below minimum
+      value = Math.round(min - (min * 0.2));
       status = 'Low';
-      value = '18';
       trend = 'down';
     } else if (isDemoHighScore) {
+      // Value above maximum
+      value = Math.round(max + (max * 0.1));
       status = 'High';
-      value = '165';
       trend = 'up';
     } else {
-      // For non-demo markers, determine status based on reference range
-      // But when applyDemoScores is true, keep them mostly optimal for demo
-      const isLow = marker.referenceRange && marker.referenceRange.includes('< Lower limit');
-      const isHigh = marker.referenceRange && marker.referenceRange.includes('> Upper limit');
-
-      if (isLow) {
-        // When applyDemoScores, only 20% chance of Low (more optimistic for demo)
-        status = applyDemoScores ? (Math.random() > 0.8 ? 'Low' : 'Optimal') : (Math.random() > 0.3 ? 'Low' : 'Optimal');
-        value = status === 'Low' ? '22' : '48';
-        trend = status === 'Low' ? 'down' : 'up';
-      } else if (isHigh) {
-        // When applyDemoScores, only 20% chance of High (more optimistic for demo)
-        status = applyDemoScores ? (Math.random() > 0.8 ? 'High' : 'Normal') : (Math.random() > 0.3 ? 'High' : 'Normal');
-        value = status === 'High' ? '195' : '102';
-        trend = status === 'High' ? 'up' : 'stable';
-      } else {
-        status = baseScore > 70 ? 'Optimal' : baseScore > 50 ? 'Normal' : 'Low';
-        value = Math.round(50 + baseScore * 0.5 + randomFactor * 20);
-        trend = ['up', 'down', 'stable'][index % 3];
-      }
+      // Random value within or near optimal range
+      const optimalMidpoint = (optimalMin + optimalMax) / 2;
+      const optimalRange = optimalMax - optimalMin;
+      value = Math.round(optimalMidpoint + (Math.random() - 0.5) * optimalRange);
+      status = calculateStatus(value, rangeConfig);
+      trend = ['up', 'down', 'stable'][index % 3];
     }
-
-    const barWidth = status === 'Optimal' || status === 'Normal' ? 70 + Math.random() * 25 :
-                     status === 'High' ? 80 + Math.random() * 15 : 20 + Math.random() * 30;
 
     return {
       ...marker,
-      value,
+      value: String(value),
+      unit: rangeConfig.unit,
       status,
       trend,
-      barWidth: Math.round(barWidth),
+      referenceRange: rangeConfig, // Store full range config for visualization
     };
   });
 };
@@ -429,16 +419,6 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {/* Foundation Level 2: Category Detail View with Biomarkers */}
         {zoomer === 'foundation' && selectedCategory && selectedCategoryData && (
           <section className="space-y-4">
-            <div className="flex items-center gap-3 mb-2">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className="flex items-center gap-1 text-sm font-medium hover:text-white transition-colors"
-                style={{ color: theme.colors.primary }}
-              >
-                <span className="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
-                Back to Categories
-              </button>
-            </div>
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-white">{selectedCategory}</h3>
               <span className="text-xs text-gray-400">{selectedCategoryData.markers.length} biomarkers</span>
@@ -466,34 +446,29 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                             )}
                           </div>
                           <p className="text-xs text-gray-500 mt-0.5">
-                            {marker.referenceRange || 'Reference range available'}
+                            {marker.referenceRange?.unit ? `Range: ${marker.referenceRange.min}-${marker.referenceRange.max} ${marker.referenceRange.unit}` : 'Reference range available'}
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="block font-bold text-white">{marker.value}</span>
+                          <div className="flex items-center justify-end gap-1">
+                            <span className="block font-bold text-white">{marker.value}</span>
+                            {marker.unit && <span className="text-xs text-gray-400">{marker.unit}</span>}
+                          </div>
                           <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
                             {marker.status}
                           </span>
                         </div>
                       </div>
-                      <div className="grid grid-cols-[1fr_60px] gap-3 items-center">
-                        <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                          <div className="absolute left-0 top-0 bottom-0 rounded-full transition-all duration-500" style={{ width: `${marker.barWidth}%`, background: getBarColor(marker.status) }}></div>
-                        </div>
-                        <div className="h-6 w-full">
-                          <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 60 20">
-                            <path
-                              d={marker.trend === 'up' ? "M0,15 L10,12 L20,16 L30,8 L40,10 L50,5 L60,8" :
-                                marker.trend === 'down' ? "M0,5 L10,8 L20,10 L30,12 L40,15 L50,15 L60,18" :
-                                "M0,10 L60,10"}
-                              fill="none"
-                              stroke={getBarColor(marker.status)}
-                              strokeLinecap="round"
-                              strokeWidth="1.5"
-                              strokeDasharray={marker.trend === 'stable' ? "4 2" : "none"}
-                            ></path>
-                          </svg>
-                        </div>
+                      <div className="space-y-2">
+                        {/* Reference range indicator */}
+                        <ReferenceRangeIndicator
+                          markerName={marker.name}
+                          value={marker.value}
+                          status={marker.status}
+                          customRange={marker.referenceRange}
+                          showLabels={!isExpanded}
+                          compact={isExpanded}
+                        />
                       </div>
                       {isExpanded && marker.description && (
                         <div className="mt-3 pt-3 border-t border-white/5">
