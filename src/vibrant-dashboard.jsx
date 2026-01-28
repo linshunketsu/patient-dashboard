@@ -1264,7 +1264,7 @@ export default function VibrantDashboard() {
       `}</style>
 
       {/* Responsive Container */}
-      <div className="w-full max-w-6xl mx-auto min-h-screen">
+      <div className="w-full min-h-screen">
         {currentView === 'dashboard' && (
           <MainDashboard 
             onZoomerClick={handleZoomerClick} 
