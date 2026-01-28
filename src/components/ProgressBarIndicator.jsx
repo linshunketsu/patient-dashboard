@@ -99,51 +99,17 @@ const ProgressBarIndicator = ({
   };
 
   const barColor = getBarColor();
-  const barHeight = compact ? 'h-6' : 'h-7';
+  const barHeight = compact ? 'h-5' : 'h-6';
 
   return (
     <div className={`w-full ${className}`}>
       <div className="flex items-center gap-3">
-        {/* Biomarker name */}
-        <div className="flex-1 min-w-0">
-          <p className={`font-medium text-white truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-            {markerName}
-          </p>
-        </div>
+        {/* Label */}
+        <span className={`text-gray-500 ${compact ? 'text-xs' : 'text-sm'}`}>Health Score</span>
 
-        {/* Value and unit */}
-        <div className="flex items-center gap-2 shrink-0">
-          <span className={`font-bold text-white ${compact ? 'text-sm' : 'text-base'}`}>
-            {value}
-          </span>
-          {unit && <span className={`text-gray-400 ${compact ? 'text-xs' : 'text-sm'}`}>{unit}</span>}
-        </div>
-
-        {/* Status badge */}
-        <span
-          className={`shrink-0 px-2 py-0.5 rounded-full font-bold ${
-            compact ? 'text-[10px]' : 'text-[11px]'
-          }`}
-          style={{
-            background:
-              status === 'Optimal' || status === 'Normal'
-                ? 'rgba(13, 242, 128, 0.15)'
-                : status === 'High'
-                  ? 'rgba(255, 92, 0, 0.15)'
-                  : status === 'Moderate'
-                    ? 'rgba(251, 191, 36, 0.15)'
-                    : 'rgba(239, 68, 68, 0.15)',
-            color:
-              status === 'Optimal' || status === 'Normal'
-                ? '#0df280'
-                : status === 'High'
-                  ? '#ff5c00'
-                  : status === 'Moderate'
-                    ? '#fbbf24'
-                    : '#ef4444'
-          }}
-        >
-          {status}
+        {/* Score percentage */}
+        <span className={`font-bold text-white ${compact ? 'text-sm' : 'text-base'}`}>
+          {Math.round(fillPercent)}
         </span>
       </div>
 
