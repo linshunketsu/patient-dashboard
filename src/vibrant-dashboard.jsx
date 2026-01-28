@@ -1192,7 +1192,7 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
               style={{ background: '#0df280', color: '#111814', boxShadow: '0 0 20px rgba(13, 242, 128, 0.3)' }}
             >
               <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>qr_code_scanner</span>
-              Log Data
+              Daily Goals
             </button>
             <button className="size-14 rounded-xl flex items-center justify-center hover:bg-[#324239] transition-colors" style={{ background: '#27352d' }}>
               <span className="material-symbols-outlined text-white" style={{ fontSize: '24px' }}>history</span>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import VibrantDashboard from './vibrant-dashboard.jsx';
+import WearableConnection from './components/WearableConnection.jsx';
 
 // ==================== DESIGN TOKENS ====================
 const theme = {
@@ -921,7 +922,7 @@ const StepSuccess = ({ onNext, selectedProvider }) => {
 };
 
 // ==================== STEP G: DASHBOARD (Waiting State) ====================
-const StepDashboard = ({ selectedProvider, onActivateDemo }) => {
+const StepDashboard = ({ selectedProvider, onActivateDemo, onSetupWearable }) => {
   const provider = selectedProvider || { name: 'Dr. Sarah Chen' };
 
   const zoomers = [
@@ -1176,6 +1177,7 @@ const StepDashboard = ({ selectedProvider, onActivateDemo }) => {
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <button
+              onClick={onSetupWearable}
               className="flex-1 h-14 text-white border rounded-xl flex items-center justify-center gap-2 font-bold text-base hover:bg-gray-700 transition-colors active:scale-95 duration-200"
               style={{ background: '#374151', borderColor: '#4b5563' }}
             >
@@ -1209,6 +1211,7 @@ const StepDashboard = ({ selectedProvider, onActivateDemo }) => {
 export default function VibrantOnboarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [showDemoDashboard, setShowDemoDashboard] = useState(false);
+  const [showWearableSetup, setShowWearableSetup] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -1247,6 +1250,16 @@ export default function VibrantOnboarding() {
     );
   }
 
+  // Show wearable setup screen
+  if (showWearableSetup) {
+    return (
+      <WearableConnection
+        onBack={() => setShowWearableSetup(false)}
+        onNext={() => setShowDemoDashboard(true)}
+      />
+    );
+  }
+
   return (
     <div className="w-full h-screen bg-black overflow-hidden" style={{ fontFamily: theme.fonts.display }}>
       <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
@@ -1264,6 +1277,7 @@ export default function VibrantOnboarding() {
         selectedTime={selectedTime}
         setSelectedTime={setSelectedTime}
         onActivateDemo={() => setShowDemoDashboard(true)}
+        onSetupWearable={() => setShowWearableSetup(true)}
       />
     </div>
   );
