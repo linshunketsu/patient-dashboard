@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import foundationZoomerData from '../data/foundation-zoomer-data.json';
 import ReferenceRangeIndicator from './ReferenceRangeIndicator.jsx';
+import ProgressBarIndicator from './ProgressBarIndicator.jsx';
+import ViewToggle from './ViewToggle.jsx';
 import { getReferenceRange, calculateStatus } from '../data/reference-ranges-config.js';
 
 // Theme tokens matching the dashboard
@@ -178,6 +180,22 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
   const [activeTab, setActiveTab] = useState('latest');
   const [expandedMarker, setExpandedMarker] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null); // For 2-level navigation in foundation zoomer
+
+  // View mode toggle state with localStorage persistence
+  const [viewMode, setViewMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('biomarkerViewMode');
+      return saved || 'reference';
+    }
+    return 'reference';
+  });
+
+  // Persist view mode preference
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('biomarkerViewMode', viewMode);
+    }
+  }, [viewMode]);
 
   const { categories, markerNameToInfo } = useMemo(() => processFoundationData(foundationZoomerData), []);
 
@@ -419,9 +437,12 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {/* Foundation Level 2: Category Detail View with Biomarkers */}
         {zoomer === 'foundation' && selectedCategory && selectedCategoryData && (
           <section className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">{selectedCategory}</h3>
-              <span className="text-xs text-gray-400">{selectedCategoryData.markers.length} biomarkers</span>
+              <ViewToggle
+                currentMode={viewMode}
+                onModeChange={setViewMode}
+              />
             </div>
             <div className="space-y-3">
               {selectedCategoryData.markers.map((marker, mIdx) => {
@@ -460,15 +481,27 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        {/* Reference range indicator */}
-                        <ReferenceRangeIndicator
-                          markerName={marker.name}
-                          value={marker.value}
-                          status={marker.status}
-                          customRange={marker.referenceRange}
-                          showLabels={!isExpanded}
-                          compact={isExpanded}
-                        />
+                        {/* Visualization with transition */}
+                        <div className="transition-all duration-300 ease-in-out">
+                          {viewMode === 'reference' ? (
+                            <ReferenceRangeIndicator
+                              markerName={marker.name}
+                              value={marker.value}
+                              status={marker.status}
+                              customRange={marker.referenceRange}
+                              showLabels={!isExpanded}
+                              compact={isExpanded}
+                            />
+                          ) : (
+                            <ProgressBarIndicator
+                              markerName={marker.name}
+                              value={marker.value}
+                              status={marker.status}
+                              unit={marker.unit}
+                              compact={isExpanded}
+                            />
+                          )}
+                        </div>
                       </div>
                       {isExpanded && marker.description && (
                         <div className="mt-3 pt-3 border-t border-white/5">
