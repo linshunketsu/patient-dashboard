@@ -1086,7 +1086,7 @@ const DailyCheckIn = ({ onBack }) => {
 const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
   return (
     <div 
-      className="text-white overflow-hidden min-h-screen w-full flex flex-col relative"
+      className="text-white h-screen w-full flex flex-col relative overflow-y-auto"
       style={{ 
         background: theme.colors.backgroundDark,
         backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
