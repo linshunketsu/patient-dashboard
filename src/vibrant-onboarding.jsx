@@ -138,8 +138,8 @@ const StepProviderValue = ({ onNext, onBack }) => {
       </div>
 
       {/* Headline */}
-      <div className="flex flex-col items-center px-6 pt-6 pb-2 text-center">
-        <h1 className="text-white tracking-tight text-3xl font-extrabold leading-tight mb-3">
+      <div className="flex flex-col items-center px-6 pt-6 pb-2 text-center max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto">
+        <h1 className="text-white tracking-tight text-3xl md:text-4xl font-extrabold leading-tight mb-3">
           Why Vibrant is{' '}
           <span className="relative inline-block" style={{ color: theme.colors.primary }}>
             Different
@@ -148,7 +148,7 @@ const StepProviderValue = ({ onNext, onBack }) => {
             </svg>
           </span>
         </h1>
-        <p className="text-gray-400 text-base font-medium leading-relaxed max-w-[280px]">
+        <p className="text-gray-400 text-base md:text-lg font-medium leading-relaxed max-w-[280px] md:max-w-md">
           Generic AI guesses based on data. <br/>Our providers verify with expertise.
         </p>
       </div>
@@ -237,23 +237,25 @@ const StepProviderValue = ({ onNext, onBack }) => {
       </div>
 
       {/* Floating Action Button */}
-      <div 
-        className="fixed bottom-0 left-0 right-0 p-5 pb-8"
+      <div
+        className="fixed bottom-0 left-0 right-0 p-5 pb-8 z-40"
         style={{ background: `linear-gradient(to top, ${theme.colors.backgroundDark}, rgba(16, 34, 25, 0.95), transparent)` }}
       >
-        <button 
-          onClick={onNext}
-          className="group relative w-full overflow-hidden rounded-full p-4 transition-all hover:shadow-lg active:scale-[0.98]"
-          style={{ background: theme.colors.primary }}
-        >
-          <div className="relative flex items-center justify-center gap-2" style={{ color: theme.colors.backgroundDark }}>
-            <span className="text-lg font-bold">Get Verified Care</span>
-            <span className="material-symbols-outlined transition-transform group-hover:translate-x-1" style={{ fontWeight: 600 }}>arrow_forward</span>
-          </div>
-        </button>
-        <p className="mt-4 text-center text-xs text-gray-500 font-medium">
-          Vibrant protects your data with HIPAA compliance.
-        </p>
+        <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
+          <button
+            onClick={onNext}
+            className="group relative w-full overflow-hidden rounded-full p-4 transition-all hover:shadow-lg active:scale-[0.98]"
+            style={{ background: theme.colors.primary }}
+          >
+            <div className="relative flex items-center justify-center gap-2" style={{ color: theme.colors.backgroundDark }}>
+              <span className="text-lg font-bold">Get Verified Care</span>
+              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1" style={{ fontWeight: 600 }}>arrow_forward</span>
+            </div>
+          </button>
+          <p className="mt-4 text-center text-xs text-gray-500 font-medium">
+            Vibrant protects your data with HIPAA compliance.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -292,7 +294,7 @@ const StepAccountSetup = ({ onNext, onBack, formData, setFormData }) => {
       </div>
 
       {/* Headline */}
-      <div className="px-6 pt-8">
+      <div className="px-6 pt-8 max-w-md md:max-w-lg mx-auto w-full">
         <h1 className="text-white tracking-tight text-3xl font-bold leading-tight text-left pb-3">Create Your Account</h1>
         <p className="text-white/70 text-base font-normal leading-relaxed text-left max-w-sm">
           Tell us a bit about yourself to begin your personalized health journey.
@@ -300,7 +302,7 @@ const StepAccountSetup = ({ onNext, onBack, formData, setFormData }) => {
       </div>
 
       {/* Form Fields */}
-      <div className="flex flex-col gap-5 px-6 pt-10">
+      <div className="flex flex-col gap-5 px-6 pt-10 max-w-md md:max-w-lg mx-auto w-full">
         <label className="flex flex-col w-full">
           <p className="text-white/90 text-sm font-semibold leading-normal pb-2 ml-1">First Name</p>
           <input 
@@ -354,7 +356,7 @@ const StepAccountSetup = ({ onNext, onBack, formData, setFormData }) => {
       <div className="flex-grow"></div>
 
       {/* Action Section */}
-      <div className="px-6 pb-12 pt-10">
+      <div className="px-6 pb-12 pt-10 max-w-md md:max-w-lg mx-auto w-full">
         <button 
           onClick={onNext}
           disabled={!isFormValid}
@@ -449,7 +451,7 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
       </div>
 
       {/* Title */}
-      <div className="px-5 pt-4">
+      <div className="px-5 pt-4 max-w-2xl md:max-w-3xl lg:max-w-5xl mx-auto w-full">
         <h1 className="tracking-tight text-3xl font-extrabold leading-tight mb-2" style={{ color: theme.colors.textMain }}>
           Nearby <span className="text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, ${theme.colors.primary}, #22c55e)` }}>Providers</span>
         </h1>
@@ -459,7 +461,7 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
       </div>
 
       {/* Search Section */}
-      <div className="px-5 py-4 space-y-3">
+      <div className="px-5 py-4 space-y-3 max-w-2xl md:max-w-3xl lg:max-w-5xl mx-auto w-full">
         <div className="relative flex items-center">
           <span className="material-symbols-outlined absolute left-4" style={{ color: theme.colors.textMuted }}>location_on</span>
           <input 
@@ -484,7 +486,7 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
       </div>
 
       {/* View Toggle & Filters */}
-      <div className="px-5 pb-4">
+      <div className="px-5 pb-4 max-w-2xl md:max-w-3xl lg:max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-4">
           <div className="flex gap-2">
             <button 
@@ -518,7 +520,7 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
       </div>
 
       {/* Provider Cards */}
-      <div className="flex flex-col gap-4 px-5 pb-32">
+      <div className="flex flex-col gap-4 px-5 pb-32 max-w-2xl md:max-w-3xl lg:max-w-5xl mx-auto w-full">
         {providers.map((provider) => (
           <div 
             key={provider.id}
@@ -586,26 +588,28 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
       </div>
 
       {/* Bottom Action Bar */}
-      <div 
-        className="fixed bottom-0 w-full p-6 border-t z-40"
-        style={{ 
+      <div
+        className="fixed bottom-0 left-0 right-0 p-6 border-t z-40"
+        style={{
           background: 'rgba(245, 248, 247, 0.9)',
           backdropFilter: 'blur(12px)',
           borderColor: '#e5e7eb'
         }}
       >
-        <button 
-          onClick={onNext}
-          disabled={!selectedProvider}
-          className="w-full h-14 font-black rounded-2xl text-base shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ background: theme.colors.textMain, color: 'white' }}
-        >
-          Continue to Health Audit
-          <span className="material-symbols-outlined">chevron_right</span>
-        </button>
-        <button className="w-full mt-4 text-center font-bold text-xs uppercase tracking-widest transition-colors" style={{ color: theme.colors.textMuted }}>
-          Skip for now
-        </button>
+        <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
+          <button
+            onClick={onNext}
+            disabled={!selectedProvider}
+            className="w-full h-14 font-black rounded-2xl text-base shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: theme.colors.textMain, color: 'white' }}
+          >
+            Continue to Health Audit
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
+          <button className="w-full mt-4 text-center font-bold text-xs uppercase tracking-widest transition-colors" style={{ color: theme.colors.textMuted }}>
+            Skip for now
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -664,7 +668,7 @@ const StepScheduleConnection = ({ onNext, onBack, selectedProvider, selectedDate
         </div>
       </header>
 
-      <main className="flex flex-col gap-6 p-4">
+      <main className="flex flex-col gap-6 p-4 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         {/* Provider Card */}
         <section 
           className="relative overflow-hidden rounded-2xl border p-4 shadow-sm backdrop-blur-md"
@@ -893,22 +897,24 @@ const StepSuccess = ({ onNext, selectedProvider }) => {
       </div>
 
       {/* Footer / Action Button */}
-      <div 
+      <div
         className="w-full px-6 pb-10 pt-4 relative z-20"
         style={{ background: `linear-gradient(to top, ${theme.colors.backgroundDark}, transparent)` }}
       >
-        <button 
-          onClick={onNext}
-          className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 transition-colors duration-200 text-lg font-bold leading-normal tracking-wide"
-          style={{ 
-            background: theme.colors.primary,
-            color: theme.colors.backgroundDark,
-            boxShadow: '0 0 20px rgba(13, 242, 128, 0.2)'
-          }}
-        >
-          <span className="mr-2">Go to My Dashboard</span>
-          <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
-        </button>
+        <div className="max-w-md md:max-w-lg mx-auto">
+          <button
+            onClick={onNext}
+            className="group relative flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 transition-colors duration-200 text-lg font-bold leading-normal tracking-wide"
+            style={{
+              background: theme.colors.primary,
+              color: theme.colors.backgroundDark,
+              boxShadow: '0 0 20px rgba(13, 242, 128, 0.2)'
+            }}
+          >
+            <span className="mr-2">Go to My Dashboard</span>
+            <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1088,9 +1094,9 @@ const StepDashboard = ({ selectedProvider, onActivateDemo }) => {
       </main>
 
       {/* Bottom Sheet */}
-      <div 
+      <div
         className="relative z-20 w-full rounded-t-3xl border-t pb-8"
-        style={{ 
+        style={{
           background: 'rgba(27, 39, 33, 0.8)',
           backdropFilter: 'blur(24px)',
           borderColor: 'rgba(255,255,255,0.05)',
@@ -1100,7 +1106,7 @@ const StepDashboard = ({ selectedProvider, onActivateDemo }) => {
         <div className="flex justify-center pt-3 pb-1">
           <div className="h-1 w-12 rounded-full bg-white/10"></div>
         </div>
-        <div className="px-6 pt-2">
+        <div className="px-6 pt-2 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto w-full">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-white">What to Expect</h2>
             <span className="text-xs font-medium text-white/40">Step 1 of 3</span>
@@ -1242,7 +1248,7 @@ export default function VibrantOnboarding() {
   }
 
   return (
-    <div className="w-full h-screen max-w-md mx-auto bg-black shadow-2xl overflow-hidden" style={{ fontFamily: theme.fonts.display }}>
+    <div className="w-full h-screen bg-black overflow-hidden" style={{ fontFamily: theme.fonts.display }}>
       <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 

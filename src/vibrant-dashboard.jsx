@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import FoundationZoomerDetail from './components/FoundationZoomerDetail.jsx';
 
 // ==================== DESIGN TOKENS ====================
 const theme = {
@@ -1271,8 +1272,8 @@ export default function VibrantDashboard() {
           />
         )}
         {currentView === 'zoomer-detail' && (
-          <ZoomerDetailView 
-            zoomer={selectedZoomer} 
+          <FoundationZoomerDetail
+            zoomer={selectedZoomer}
             onBack={handleBack}
           />
         )}
