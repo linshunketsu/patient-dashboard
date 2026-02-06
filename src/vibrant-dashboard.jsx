@@ -2,22 +2,47 @@ import React, { useState, useEffect, useCallback } from 'react';
 import FoundationZoomerDetail from './components/FoundationZoomerDetail.jsx';
 
 // ==================== DESIGN TOKENS ====================
+// Amber + Teal Color System - Balanced warm-cool harmony with depth
 const theme = {
   colors: {
-    primary: '#0df280',
-    primaryDim: 'rgba(13, 242, 128, 0.1)',
-    backgroundDark: '#0a110e',
-    backgroundDarkAlt: '#102219',
-    surfaceDark: '#1b2721',
-    cardDark: '#1a2c24',
-    statusWarning: '#F2C94C',
-    statusAlert: '#FF4B4B',
-    statusLocked: '#4B5563',
-    // Check-in theme (purple)
-    checkInPrimary: '#8c2bee',
-    checkInBgDark: '#130c1a',
-    checkInSurface: '#1f162b',
-    checkInCard: '#2d2438',
+    // Primary - Warm Amber (sophisticated, energetic)
+    primary: '#F59E0B',
+    primaryDark: '#D97706',
+    primaryDim: 'rgba(245, 158, 11, 0.12)',
+
+    // Secondary colors - warm terracotta & soft rose
+    terracotta: '#CC7A50',      // Warm earthy accent
+    dustyRose: '#E8A0A0',       // Soft warm accent
+    sand: '#E8DFD4',            // Warm neutral
+
+    // Teal for cool contrast (pairs beautifully with amber)
+    teal: '#00BFA5',
+    tealLight: '#4DD0E1',
+
+    // Backgrounds - warm cream base
+    backgroundLight: '#FFFBF5',  // Soft warm cream
+    backgroundDark: '#1F1A14',   // Deep warm charcoal
+    backgroundDarkAlt: '#FFF5E6', // Light warm alternative
+    surfaceDark: '#FFFFFF',      // Pure white for cards
+    cardDark: '#FFFFFF',         // White cards
+
+    // Status colors - harmonious with amber primary
+    statusOptimal: '#00BFA5',    // Teal (beautiful contrast with amber)
+    statusWarning: '#FF7043',    // Warm coral
+    statusAlert: '#E91E63',      // Vibrant rose
+    statusModerate: '#FFA726',   // Warm amber-orange
+    statusLocked: '#9E9E9E',     // Neutral gray
+
+    // Check-in theme (amber gradient)
+    checkInPrimary: '#F59E0B',
+    checkInBgDark: '#FFF8E7',
+    checkInSurface: '#FFFFFF',
+    checkInCard: '#FFFFFF',
+
+    // Text colors - warm dark browns
+    textMain: '#2D2416',         // Deep warm brown
+    textLight: '#6B5D4F',        // Warm medium brown
+    textWhite: '#FFFFFF',
   },
 };
 
@@ -39,11 +64,11 @@ const zoomerData = {
 // Calculate freshness state and color based on days since test
 const calculateFreshnessInfo = (daysAgo) => {
   if (daysAgo <= 30) {
-    return { state: 'fresh', dotColor: '#4CAF50' };
+    return { state: 'fresh', dotColor: theme.colors.statusOptimal }; // Teal
   } else if (daysAgo <= 60) {
-    return { state: 'aging', dotColor: '#FF9800' };
+    return { state: 'aging', dotColor: theme.colors.statusWarning }; // Coral
   } else {
-    return { state: 'stale', dotColor: '#F44336' };
+    return { state: 'stale', dotColor: theme.colors.statusAlert }; // Rose
   }
 };
 
@@ -191,54 +216,55 @@ const LockedZoomerModal = ({ zoomer, onClose, onLearnMore }) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Bottom Sheet */}
       <div className="absolute bottom-0 left-0 w-full max-h-[90vh] z-50 flex flex-col">
-        <div 
-          className="w-full rounded-t-[32px] shadow-2xl relative flex flex-col pb-8 ring-1 ring-white/10"
-          style={{ background: '#111814' }}
+        <div
+          className="w-full rounded-t-[32px] shadow-2xl relative flex flex-col pb-8 ring-1"
+          style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.1)' }}
         >
           {/* Close Button */}
-          <button 
+          <button
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-gray-400 hover:text-white transition-colors z-20"
+            className="absolute top-6 right-6 p-2 rounded-full transition-colors z-20"
+            style={{ background: 'rgba(74, 66, 56, 0.08)', color: theme.colors.textLight }}
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
 
           {/* Drag Handle */}
           <div className="w-full flex justify-center pt-3 pb-1">
-            <div className="h-1.5 w-12 rounded-full" style={{ background: '#3b5447' }}></div>
+            <div className="h-1.5 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
           </div>
 
           {/* Content */}
           <div className="overflow-y-auto px-6 pt-2 pb-4">
             {/* Hero Image */}
-            <div className="w-full aspect-[2/1] rounded-2xl overflow-hidden mb-6 relative group shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10"></div>
-              <img 
-                src={info.image} 
+            <div className="w-full aspect-[2/1] rounded-2xl overflow-hidden mb-6 relative group shadow-md">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
+              <img
+                src={info.image}
                 alt={info.name}
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute bottom-4 left-4 z-20 h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[28px]" style={{ color: '#0df280' }}>{info.icon}</span>
+              <div className="absolute bottom-4 left-4 z-20 h-12 w-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255, 255, 255, 0.9)', border: '1px solid rgba(244, 202, 37, 0.3)' }}>
+                <span className="material-symbols-outlined text-[28px]" style={{ color: theme.colors.primary }}>{info.icon}</span>
               </div>
             </div>
 
             {/* Text Content */}
             <div className="flex flex-col items-center text-center">
-              <h1 className="text-white tracking-tight text-[32px] font-extrabold leading-tight mb-2">
+              <h1 className="tracking-tight text-[32px] font-extrabold leading-tight mb-2" style={{ color: theme.colors.textMain }}>
                 {info.name}
               </h1>
-              <p className="font-medium text-lg mb-4" style={{ color: '#0df280' }}>
+              <p className="font-medium text-lg mb-4" style={{ color: theme.colors.primary }}>
                 {info.tagline}
               </p>
-              <p className="text-gray-400 text-base leading-relaxed max-w-sm mx-auto mb-8">
+              <p className="text-base leading-relaxed max-w-sm mx-auto mb-8" style={{ color: theme.colors.textLight }}>
                 {info.description}
               </p>
 
@@ -246,10 +272,10 @@ const LockedZoomerModal = ({ zoomer, onClose, onLearnMore }) => {
               <div className="flex w-full justify-between gap-2 mb-8 max-w-xs">
                 {info.benefits.map((benefit, i) => (
                   <div key={i} className="flex flex-col items-center gap-2 flex-1">
-                    <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[20px]" style={{ color: 'rgba(13, 242, 128, 0.8)' }}>{benefit.icon}</span>
+                    <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.2)' }}>
+                      <span className="material-symbols-outlined text-[20px]" style={{ color: theme.colors.primary }}>{benefit.icon}</span>
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">{benefit.label}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: theme.colors.textLight }}>{benefit.label}</span>
                   </div>
                 ))}
               </div>
@@ -258,20 +284,21 @@ const LockedZoomerModal = ({ zoomer, onClose, onLearnMore }) => {
 
           {/* CTA Buttons */}
           <div className="px-6 pb-2 w-full flex flex-col gap-3">
-            <button 
+            <button
               className="w-full font-bold text-lg h-14 rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200"
-              style={{ 
-                background: '#0df280', 
-                color: '#102219',
-                boxShadow: '0 0 20px rgba(13, 242, 128, 0.3)'
+              style={{
+                background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)',
+                color: '#2A241C',
+                boxShadow: '0 4px 16px rgba(244, 202, 37, 0.35)'
               }}
             >
               <span>Request from Provider</span>
               <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
             </button>
-            <button 
+            <button
               onClick={onLearnMore}
-              className="w-full bg-transparent hover:bg-white/5 text-gray-400 font-medium text-sm h-10 rounded-lg transition-colors"
+              className="w-full bg-transparent font-medium text-sm h-10 rounded-lg transition-colors"
+              style={{ color: theme.colors.textLight, hover: { background: 'rgba(74, 66, 56, 0.05)' } }}
             >
               Learn more about this test
             </button>
@@ -289,30 +316,32 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
 
   const getDetailColor = (color) => {
     const colors = {
-      blue: { bg: 'rgba(59, 130, 246, 0.1)', text: '#60a5fa' },
-      purple: { bg: 'rgba(168, 85, 247, 0.1)', text: '#a78bfa' },
-      pink: { bg: 'rgba(236, 72, 153, 0.1)', text: '#f472b6' },
-      orange: { bg: 'rgba(251, 146, 60, 0.1)', text: '#fb923c' },
-      yellow: { bg: 'rgba(250, 204, 21, 0.1)', text: '#facc15' },
-      cyan: { bg: 'rgba(34, 211, 238, 0.1)', text: '#22d3ee' },
-      red: { bg: 'rgba(239, 68, 68, 0.1)', text: '#f87171' },
-      green: { bg: 'rgba(74, 222, 128, 0.1)', text: '#4ade80' },
-      amber: { bg: 'rgba(251, 191, 36, 0.1)', text: '#fbbf24' },
+      blue: { bg: 'rgba(59, 130, 246, 0.12)', text: '#3b82f6' },
+      purple: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7' },
+      pink: { bg: 'rgba(236, 72, 153, 0.12)', text: '#ec4899' },
+      orange: { bg: 'rgba(232, 139, 60, 0.12)', text: theme.colors.statusWarning },
+      yellow: { bg: 'rgba(212, 168, 84, 0.12)', text: theme.colors.statusModerate },
+      cyan: { bg: 'rgba(34, 211, 238, 0.12)', text: '#22d3ee' },
+      red: { bg: 'rgba(232, 93, 78, 0.12)', text: theme.colors.statusAlert },
+      green: { bg: 'rgba(107, 155, 58, 0.12)', text: theme.colors.statusOptimal },
+      amber: { bg: 'rgba(212, 168, 84, 0.12)', text: theme.colors.statusModerate },
     };
     return colors[color] || colors.blue;
   };
 
   return (
-    <div className="relative w-full min-h-screen" style={{ background: '#0b120f' }}>
+    <div className="relative w-full min-h-screen" style={{ background: theme.colors.backgroundLight }}>
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 pt-4 pb-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
-        <button 
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 pt-4 pb-4 bg-gradient-to-b from-white/80 to-transparent pointer-events-none">
+        <button
           onClick={onBack}
-          className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white border border-white/10 pointer-events-auto hover:bg-black/40 transition-colors"
+          className="h-10 w-10 rounded-full backdrop-blur-md flex items-center justify-center border pointer-events-auto transition-colors"
+          style={{ background: 'rgba(255, 255, 255, 0.7)', borderColor: 'rgba(74, 66, 56, 0.1)', color: theme.colors.textMain }}
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
-        <button className="h-10 w-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-white border border-white/10 pointer-events-auto hover:bg-black/40 transition-colors">
+        <button className="h-10 w-10 rounded-full backdrop-blur-md flex items-center justify-center border pointer-events-auto transition-colors"
+          style={{ background: 'rgba(255, 255, 255, 0.7)', borderColor: 'rgba(74, 66, 56, 0.1)', color: theme.colors.textMain }}>
           <span className="material-symbols-outlined">more_horiz</span>
         </button>
       </header>
@@ -328,12 +357,12 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute bottom-0 left-0 w-full p-6 z-20">
-            <div className="inline-flex items-center px-2.5 py-1 rounded-md backdrop-blur-sm mb-3" style={{ background: 'rgba(13, 242, 128, 0.1)', border: '1px solid rgba(13, 242, 128, 0.2)' }}>
-              <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: '#0df280' }}>{info.category}</span>
+            <div className="inline-flex items-center px-2.5 py-1 rounded-md backdrop-blur-sm mb-3" style={{ background: 'rgba(0, 191, 165, 0.15)', border: '1px solid rgba(0, 191, 165, 0.3)' }}>
+              <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: '#F59E0B' }}>{info.category}</span>
             </div>
             <h1 className="text-3xl font-extrabold text-white leading-tight mb-1">{info.name}</h1>
             <div className="flex items-center gap-1.5 text-gray-400 text-sm font-medium">
-              <span className="material-symbols-outlined text-[16px]" style={{ color: '#0df280' }}>verified</span>
+              <span className="material-symbols-outlined text-[16px]" style={{ color: '#F59E0B' }}>verified</span>
               <span>Comprehensive Panel</span>
             </div>
           </div>
@@ -371,7 +400,7 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
                 {info.measures.map((measure, i) => (
                   <React.Fragment key={i}>
                     <div className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-[20px] mt-0.5" style={{ color: '#0df280' }}>check_circle</span>
+                      <span className="material-symbols-outlined text-[20px] mt-0.5" style={{ color: '#F59E0B' }}>check_circle</span>
                       <div>
                         <p className="font-bold text-white text-sm">{measure.title}</p>
                         <p className="text-xs text-gray-500">{measure.subtitle}</p>
@@ -389,13 +418,13 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">The Patient Experience</h3>
             <div className="relative pl-4 space-y-6">
               {/* Timeline line */}
-              <div className="absolute left-[27px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#0df280] to-transparent"></div>
+              <div className="absolute left-[27px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#00BFA5] to-transparent"></div>
               {info.experience.map((step, i) => (
                 <div key={i} className="relative flex items-center gap-4">
-                  <div 
+                  <div
                     className="w-6 h-6 rounded-full border-4 z-10"
-                    style={{ 
-                      background: i === 0 ? '#0df280' : i === 1 ? 'rgba(13, 242, 128, 0.5)' : 'rgba(13, 242, 128, 0.2)',
+                    style={{
+                      background: i === 0 ? '#F59E0B' : i === 1 ? 'rgba(0, 191, 165, 0.5)' : 'rgba(0, 191, 165, 0.2)',
                       borderColor: '#0b120f'
                     }}
                   ></div>
@@ -410,8 +439,8 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
 
           {/* Clinically Validated Badge */}
           <section className="mb-6">
-            <div className="rounded-xl p-4 border flex items-center gap-4" style={{ background: 'linear-gradient(to right, #1a2e24, #111814)', borderColor: 'rgba(13, 242, 128, 0.2)' }}>
-              <div className="h-12 w-12 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(13, 242, 128, 0.1)', color: '#0df280' }}>
+            <div className="rounded-xl p-4 border flex items-center gap-4" style={{ background: 'linear-gradient(to right, #1a2e24, #111814)', borderColor: 'rgba(0, 191, 165, 0.3)' }}>
+              <div className="h-12 w-12 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(0, 191, 165, 0.15)', color: '#F59E0B' }}>
                 <span className="material-symbols-outlined text-[28px]">verified_user</span>
               </div>
               <div>
@@ -424,13 +453,13 @@ const LockedZoomerLearnMore = ({ zoomer, onBack }) => {
       </main>
 
       {/* Fixed Bottom CTA */}
-      <div className="fixed bottom-0 left-0 w-full p-6 backdrop-blur-md border-t border-white/5 z-40" style={{ background: 'rgba(11, 18, 15, 0.9)' }}>
-        <button 
+      <div className="fixed bottom-0 left-0 w-full p-6 backdrop-blur-md border-t border-white/10 z-40" style={{ background: 'rgba(255, 255, 255, 0.85)' }}>
+        <button
           className="w-full font-extrabold text-lg h-14 rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200"
-          style={{ 
-            background: '#0df280', 
-            color: '#102219',
-            boxShadow: '0 0 20px rgba(13, 242, 128, 0.4)'
+          style={{
+            background: '#F59E0B',
+            color: '#2D2416',
+            boxShadow: '0 0 20px rgba(245, 158, 11, 0.4)'
           }}
         >
           <span>Request This Test</span>
@@ -456,16 +485,16 @@ const WellnessMap = ({ onZoomerClick }) => {
       }}
     >
       {/* SVG Connection Lines */}
-      <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-30" viewBox="0 0 380 420">
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="190" y1="210" y2="105"></line>
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="280" y1="210" y2="157"></line>
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="280" y1="210" y2="262"></line>
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="190" y1="210" y2="315"></line>
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="100" y1="210" y2="262"></line>
-        <line stroke="#0df280" strokeWidth="1" x1="190" x2="100" y1="210" y2="157"></line>
-        <line stroke="white" strokeDasharray="4 2" strokeOpacity="0.2" x1="190" x2="190" y1="105" y2="20"></line>
-        <line stroke="white" strokeDasharray="4 2" strokeOpacity="0.2" x1="280" x2="350" y1="157" y2="110"></line>
-        <line stroke="white" strokeDasharray="4 2" strokeOpacity="0.2" x1="280" x2="350" y1="262" y2="310"></line>
+      <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-40" viewBox="0 0 380 420">
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="190" y1="210" y2="105"></line>
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="280" y1="210" y2="157"></line>
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="280" y1="210" y2="262"></line>
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="190" y1="210" y2="315"></line>
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="100" y1="210" y2="262"></line>
+        <line stroke={theme.colors.primary} strokeWidth="1.5" x1="190" x2="100" y1="210" y2="157"></line>
+        <line stroke={theme.colors.sand} strokeDasharray="4 2" strokeOpacity="0.6" x1="190" x2="190" y1="105" y2="20"></line>
+        <line stroke={theme.colors.sand} strokeDasharray="4 2" strokeOpacity="0.6" x1="280" x2="350" y1="157" y2="110"></line>
+        <line stroke={theme.colors.sand} strokeDasharray="4 2" strokeOpacity="0.6" x1="280" x2="350" y1="262" y2="310"></line>
       </svg>
 
       {/* Center - Foundation (at 190, 210) */}
@@ -475,40 +504,40 @@ const WellnessMap = ({ onZoomerClick }) => {
         onClick={() => onZoomerClick('foundation')}
       >
         <div className="relative w-28 h-32 transition-transform group-hover:scale-105 duration-300">
-          <div className="absolute inset-0 blur-xl rounded-full animate-pulse" style={{ background: 'rgba(13, 242, 128, 0.2)' }}></div>
+          <div className="absolute inset-0 blur-xl rounded-full animate-pulse" style={{ background: 'rgba(245, 158, 11, 0.25)' }}></div>
           <div
             className="absolute inset-0 p-[2px]"
             style={{
-              background: 'linear-gradient(to bottom right, #0df280, rgba(13, 242, 128, 0.5), rgba(13, 242, 128, 0.1))',
+              background: 'linear-gradient(to bottom right, #F59E0B, rgba(245, 158, 11, 0.6), rgba(204, 122, 80, 0.3))',
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
             }}
           >
             <div
               className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden px-2"
               style={{
-                background: '#0a110e',
+                background: '#FFFFFF',
                 clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
               }}
             >
-              <div className="absolute inset-0" style={{ background: 'rgba(13, 242, 128, 0.1)' }}></div>
-              <span className="relative text-4xl font-extrabold tracking-tighter z-10" style={{ color: '#0df280' }}>85</span>
+              <div className="absolute inset-0" style={{ background: 'rgba(255, 215, 0, 0.12)' }}></div>
+              <span className="relative text-4xl font-extrabold tracking-tighter z-10" style={{ color: theme.colors.primary }}>85</span>
               {/* Freshness Tag - positioned between score and label */}
               <div
                 className="flex items-center gap-1 whitespace-nowrap z-10"
-                style={{ background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', padding: '1px 3px' }}
+                style={{ background: 'rgba(245, 158, 11, 0.2)', borderRadius: '4px', padding: '1px 3px' }}
               >
                 <span
                   className="leading-none"
-                  style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#4CAF50' }}
+                  style={{ width: '4px', height: '4px', borderRadius: '50%', background: theme.colors.statusOptimal }}
                 ></span>
-                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: '#1a1a1a' }}>
+                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: theme.colors.textMain }}>
                   fresh
                 </span>
-                <span className="text-[5px] leading-none" style={{ color: '#666' }}>
+                <span className="text-[5px] leading-none" style={{ color: theme.colors.textLight }}>
                   {zoomerData.foundation.daysAgo}d
                 </span>
               </div>
-              <span className="relative text-[9px] font-bold text-white uppercase tracking-widest z-10">Foundation</span>
+              <span className="relative text-[9px] font-bold uppercase tracking-widest z-10" style={{ color: theme.colors.textMain }}>Foundation</span>
             </div>
           </div>
         </div>
@@ -584,10 +613,10 @@ const WellnessMap = ({ onZoomerClick }) => {
 // Inner ring hexagon node
 const HexNode = ({ name, icon, score, color, locked, daysAgo, style, onClick }) => {
   const getColor = () => {
-    if (locked) return { gradient: 'rgba(255,255,255,0.1)', icon: '#6b7280', text: '#9ca3af' };
-    if (color === 'warning') return { gradient: 'rgba(242, 201, 76, 0.6)', icon: '#F2C94C', text: '#F2C94C', scoreBg: 'rgba(242, 201, 76, 0.2)', scoreBorder: 'rgba(242, 201, 76, 0.3)' };
-    if (color === 'alert') return { gradient: 'rgba(255, 75, 75, 0.6)', icon: '#FF4B4B', text: '#FF4B4B', scoreBg: 'rgba(255, 75, 75, 0.2)', scoreBorder: 'rgba(255, 75, 75, 0.3)' };
-    return { gradient: 'rgba(13, 242, 128, 0.6)', icon: '#0df280', text: '#0df280', scoreBg: 'rgba(13, 242, 128, 0.2)', scoreBorder: 'rgba(13, 242, 128, 0.3)' };
+    if (locked) return { gradient: 'rgba(200, 190, 180, 0.3)', icon: theme.colors.statusLocked, text: theme.colors.statusLocked, scoreBg: 'rgba(200, 190, 180, 0.2)', scoreBorder: 'rgba(200, 190, 180, 0.3)' };
+    if (color === 'warning') return { gradient: 'rgba(255, 112, 67, 0.5)', icon: theme.colors.statusWarning, text: theme.colors.statusWarning, scoreBg: 'rgba(255, 112, 67, 0.15)', scoreBorder: 'rgba(255, 112, 67, 0.25)' };
+    if (color === 'alert') return { gradient: 'rgba(233, 30, 99, 0.5)', icon: theme.colors.statusAlert, text: theme.colors.statusAlert, scoreBg: 'rgba(233, 30, 99, 0.15)', scoreBorder: 'rgba(233, 30, 99, 0.25)' };
+    return { gradient: 'rgba(245, 158, 11, 0.5)', icon: theme.colors.primary, text: theme.colors.primary, scoreBg: 'rgba(245, 158, 11, 0.15)', scoreBorder: 'rgba(245, 158, 11, 0.25)' };
   };
 
   const colors = getColor();
@@ -599,18 +628,18 @@ const HexNode = ({ name, icon, score, color, locked, daysAgo, style, onClick }) 
       style={{ ...style, transform: 'translate(-50%, -50%)' }}
       onClick={onClick}
     >
-      <div className={`relative w-24 h-28 transition-transform ${!locked && 'group-hover:scale-105'} duration-300 ${locked ? 'opacity-70 hover:opacity-100' : ''}`}>
+      <div className={`relative w-24 h-28 transition-transform ${!locked && 'group-hover:scale-105'} duration-300 ${locked ? 'opacity-60 hover:opacity-80' : ''}`}>
         <div
           className="absolute inset-0 p-[1px]"
           style={{
-            background: locked ? 'rgba(255,255,255,0.1)' : `linear-gradient(to bottom, ${colors.gradient}, transparent)`,
+            background: locked ? colors.gradient : `linear-gradient(to bottom, ${colors.gradient}, transparent)`,
             clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
           }}
         >
           <div
-            className="w-full h-full backdrop-blur-md flex flex-col items-center justify-center relative px-2"
+            className="w-full h-full backdrop-blur-sm flex flex-col items-center justify-center relative px-2"
             style={{
-              background: locked ? 'rgba(16, 24, 20, 0.9)' : 'rgba(27, 39, 33, 0.8)',
+              background: locked ? 'rgba(245, 240, 232, 0.9)' : '#FFFFFF',
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
             }}
           >
@@ -624,21 +653,21 @@ const HexNode = ({ name, icon, score, color, locked, daysAgo, style, onClick }) 
             {freshnessInfo && (
               <div
                 className="flex items-center gap-1 whitespace-nowrap"
-                style={{ background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', padding: '1px 3px' }}
+                style={{ background: 'rgba(245, 158, 11, 0.2)', borderRadius: '4px', padding: '1px 3px' }}
               >
                 <span
                   className="leading-none"
                   style={{ width: '4px', height: '4px', borderRadius: '50%', background: freshnessInfo.dotColor }}
                 ></span>
-                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: '#1a1a1a' }}>
+                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: theme.colors.textMain }}>
                   {freshnessInfo.state}
                 </span>
-                <span className="text-[5px] leading-none" style={{ color: '#666' }}>
+                <span className="text-[5px] leading-none" style={{ color: theme.colors.textLight }}>
                   {daysAgo}d
                 </span>
               </div>
             )}
-            <span className={`text-[9px] font-bold ${locked ? 'text-gray-400' : 'text-white'}`}>{name}</span>
+            <span className="text-[9px] font-bold" style={{ color: locked ? theme.colors.statusLocked : theme.colors.textMain }}>{name}</span>
             {!locked && score && (
               <div
                 className="mt-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold"
@@ -657,28 +686,28 @@ const HexNode = ({ name, icon, score, color, locked, daysAgo, style, onClick }) 
 // Satellite (outer ring) small hexagon node - always locked
 const HexNodeSmall = ({ name, style, onClick }) => {
   return (
-    <div 
+    <div
       className="absolute z-10 group cursor-not-allowed"
       style={{ ...style, transform: 'translate(-50%, -50%)' }}
       onClick={onClick}
     >
-      <div className="relative w-20 h-24 opacity-50 hover:opacity-80 transition-opacity">
-        <div 
+      <div className="relative w-20 h-24 opacity-50 hover:opacity-70 transition-opacity">
+        <div
           className="absolute inset-0 p-[1px]"
-          style={{ 
-            background: 'rgba(255,255,255,0.05)',
+          style={{
+            background: 'rgba(200, 190, 180, 0.2)',
             clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
           }}
         >
-          <div 
+          <div
             className="w-full h-full flex flex-col items-center justify-center"
-            style={{ 
-              background: 'rgba(10, 17, 14, 0.9)',
+            style={{
+              background: 'rgba(245, 240, 232, 0.8)',
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
             }}
           >
-            <span className="material-symbols-outlined text-gray-600 mb-0.5" style={{ fontSize: '18px' }}>lock</span>
-            <span className="text-[9px] font-bold text-gray-500">{name}</span>
+            <span className="material-symbols-outlined mb-0.5" style={{ fontSize: '18px', color: theme.colors.statusLocked }}>lock</span>
+            <span className="text-[9px] font-bold" style={{ color: theme.colors.statusLocked }}>{name}</span>
           </div>
         </div>
       </div>
@@ -699,28 +728,28 @@ const HealthJourneyTimeline = () => {
   return (
     <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
       <div className="flex items-center min-w-max relative px-4">
-        <div className="absolute left-0 right-10 top-[15px] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent w-full"></div>
+        <div className="absolute left-0 right-10 top-[15px] h-[1px] bg-gradient-to-r from-transparent via-[rgba(74,66,56,0.1)] to-transparent w-full"></div>
         {milestones.map((milestone, index) => (
-          <div 
+          <div
             key={index}
             className={`relative flex flex-col items-center mr-10 group transition-all ${
-              milestone.status === 'past' ? 'opacity-50 grayscale hover:grayscale-0' : 
+              milestone.status === 'past' ? 'opacity-50 grayscale hover:grayscale-0' :
               milestone.status === 'future' ? 'opacity-40' : ''
             }`}
           >
             <div className="relative z-10 mb-2">
               {milestone.status === 'current' ? (
-                <div className="size-3 rounded-full border flex items-center justify-center" style={{ background: '#0a110e', borderColor: '#0df280', boxShadow: '0 0 15px rgba(13,242,128,0.6)' }}>
-                  <div className="size-1.5 rounded-full animate-pulse" style={{ background: '#0df280' }}></div>
+                <div className="size-3 rounded-full border flex items-center justify-center" style={{ background: '#FFFFFF', borderColor: '#F59E0B', boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)' }}>
+                  <div className="size-1.5 rounded-full animate-pulse" style={{ background: '#FFD700' }}></div>
                 </div>
               ) : milestone.status === 'completed' ? (
-                <div className="size-2 rounded-full" style={{ background: '#0df280', boxShadow: '0 0 10px rgba(13,242,128,0.3)' }}></div>
+                <div className="size-2 rounded-full" style={{ background: '#FFD700', boxShadow: '0 0 10px rgba(244, 202, 37, 0.3)' }}></div>
               ) : (
-                <div className="size-2 rounded-full border" style={{ background: '#1b2721', borderColor: milestone.status === 'past' ? 'rgba(13, 242, 128, 0.4)' : 'rgba(255,255,255,0.2)' }}></div>
+                <div className="size-2 rounded-full border" style={{ background: '#FFFFFF', borderColor: milestone.status === 'past' ? 'rgba(244, 202, 37, 0.4)' : 'rgba(74, 66, 56, 0.15)' }}></div>
               )}
             </div>
-            <span className={`text-[9px] font-medium ${milestone.status === 'current' || milestone.status === 'completed' ? 'text-primary' : 'text-gray-500'}`} style={{ color: milestone.status === 'current' || milestone.status === 'completed' ? '#0df280' : undefined }}>{milestone.date}</span>
-            <span className={`text-[9px] font-bold mt-0.5 ${milestone.status === 'current' ? 'text-white drop-shadow-md' : milestone.status === 'completed' ? 'text-white' : 'text-gray-500'}`}>{milestone.label}</span>
+            <span className="text-[9px] font-medium" style={{ color: milestone.status === 'current' || milestone.status === 'completed' ? theme.colors.primary : theme.colors.textLight }}>{milestone.date}</span>
+            <span className="text-[9px] font-bold mt-0.5" style={{ color: milestone.status === 'current' ? theme.colors.textMain : milestone.status === 'completed' ? theme.colors.textMain : theme.colors.textLight }}>{milestone.label}</span>
           </div>
         ))}
       </div>
@@ -731,25 +760,25 @@ const HealthJourneyTimeline = () => {
 // ==================== TREND CARD ====================
 const TrendCard = () => {
   return (
-    <div className="bg-[#151f19] rounded-2xl p-4 border border-white/5 relative overflow-hidden shadow-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" style={{ background: 'linear-gradient(to bottom right, rgba(13, 242, 128, 0.05), transparent)' }}></div>
+    <div className="rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+      <div className="absolute inset-0 opacity-50" style={{ background: 'linear-gradient(to bottom right, rgba(244, 202, 37, 0.05), transparent)' }}></div>
       <div className="flex flex-col h-full justify-between relative z-10">
         <div>
-          <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Score Trend</span>
+          <span className="text-[9px] font-bold uppercase tracking-wider block mb-1" style={{ color: theme.colors.textLight }}>Score Trend</span>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-white">85</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(13, 242, 128, 0.1)', color: '#0df280' }}>↑ 4%</span>
+            <span className="text-2xl font-bold" style={{ color: theme.colors.textMain }}>85</span>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(245, 158, 11, 0.2)', color: theme.colors.primary }}>↑ 4%</span>
           </div>
         </div>
         <div className="h-10 w-full mt-2 relative">
           <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
             <defs>
               <linearGradient id="trendGrad" x1="0%" x2="0%" y1="0%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#0df280', stopOpacity: 0.3 }}></stop>
-                <stop offset="100%" style={{ stopColor: '#0df280', stopOpacity: 0 }}></stop>
+                <stop offset="0%" style={{ stopColor: theme.colors.primary, stopOpacity: 0.25 }}></stop>
+                <stop offset="100%" style={{ stopColor: theme.colors.primary, stopOpacity: 0 }}></stop>
               </linearGradient>
             </defs>
-            <path d="M0,35 Q20,30 40,25 T80,15 T100,5" fill="none" stroke="#0df280" strokeWidth="2" vectorEffect="non-scaling-stroke"></path>
+            <path d="M0,35 Q20,30 40,25 T80,15 T100,5" fill="none" stroke={theme.colors.primary} strokeWidth="2" vectorEffect="non-scaling-stroke"></path>
             <path d="M0,35 Q20,30 40,25 T80,15 T100,5 V40 H0 Z" fill="url(#trendGrad)" stroke="none"></path>
           </svg>
         </div>
@@ -761,23 +790,23 @@ const TrendCard = () => {
 // ==================== WEARABLE CARD ====================
 const WearableCard = () => {
   return (
-    <div className="bg-[#151f19] rounded-2xl p-4 border border-white/5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+    <div className="rounded-2xl p-4 border relative overflow-hidden flex flex-col justify-between shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
       <div className="flex justify-between items-start relative z-10">
-        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Wearable</span>
-        <div className="size-1.5 rounded-full animate-pulse" style={{ background: '#0df280', boxShadow: '0 0 20px rgba(13, 242, 128, 0.3)' }}></div>
+        <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: theme.colors.textLight }}>Wearable</span>
+        <div className="size-1.5 rounded-full animate-pulse" style={{ background: theme.colors.primary, boxShadow: '0 0 20px rgba(245, 158, 11, 0.35)' }}></div>
       </div>
       <div className="flex flex-col gap-2 mt-2 relative z-10">
         <div className="flex items-center gap-2">
-          <div className="size-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-white shrink-0">
+          <div className="size-8 rounded-full flex items-center justify-center border shrink-0" style={{ background: 'rgba(245, 158, 11, 0.1)', borderColor: 'rgba(245, 158, 11, 0.2)', color: theme.colors.primary }}>
             <span className="material-symbols-outlined text-[18px]">watch</span>
           </div>
           <div>
-            <div className="text-xs font-bold text-white leading-tight">Oura Ring</div>
-            <div className="text-[9px]" style={{ color: 'rgba(13, 242, 128, 0.8)' }}>Synced 2m ago</div>
+            <div className="text-xs font-bold leading-tight" style={{ color: theme.colors.textMain }}>Oura Ring</div>
+            <div className="text-[9px]" style={{ color: theme.colors.primary }}>Synced 2m ago</div>
           </div>
         </div>
       </div>
-      <div className="absolute -right-4 -bottom-4 size-20 rounded-full blur-xl" style={{ background: 'rgba(13, 242, 128, 0.05)' }}></div>
+      <div className="absolute -right-4 -bottom-4 size-20 rounded-full blur-xl" style={{ background: 'rgba(245, 158, 11, 0.08)' }}></div>
     </div>
   );
 };
@@ -789,32 +818,34 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
 
   const getStatusStyles = (status) => {
     switch (status) {
-      case 'Optimal': case 'Normal': return { bg: 'rgba(13, 242, 128, 0.1)', color: '#0df280' };
-      case 'High': return { bg: 'rgba(255, 92, 0, 0.1)', color: '#ff5c00' };
-      case 'Low': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' };
-      default: return { bg: 'rgba(13, 242, 128, 0.1)', color: '#0df280' };
+      case 'Optimal': case 'Normal': return { bg: 'rgba(0, 191, 165, 0.12)', color: '#00BFA5' };
+      case 'High': return { bg: 'rgba(255, 112, 67, 0.12)', color: '#FF7043' };
+      case 'Low': return { bg: 'rgba(233, 30, 99, 0.12)', color: '#E91E63' };
+      case 'Moderate': return { bg: 'rgba(255, 167, 38, 0.12)', color: '#FFA726' };
+      default: return { bg: 'rgba(0, 191, 165, 0.12)', color: '#00BFA5' };
     }
   };
 
   const getBarColor = (status) => {
     switch (status) {
-      case 'Optimal': case 'Normal': return '#0df280';
-      case 'High': return '#ff5c00';
-      case 'Low': return '#ef4444';
-      default: return '#0df280';
+      case 'Optimal': case 'Normal': return '#00BFA5';
+      case 'High': return '#FF7043';
+      case 'Low': return '#E91E63';
+      case 'Moderate': return '#FFA726';
+      default: return '#00BFA5';
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#102219' }}>
+    <div className="flex-1 flex flex-col overflow-hidden" style={{ background: theme.colors.backgroundLight }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300" style={{ background: 'rgba(16, 34, 25, 0.9)', borderColor: 'rgba(255,255,255,0.05)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300" style={{ background: 'rgba(255, 255, 255, 0.85)', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
         <div className="flex items-center justify-between px-4 h-16 max-w-4xl mx-auto w-full">
-          <button onClick={onBack} className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors text-white">
+          <button onClick={onBack} className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors" style={{ color: theme.colors.textMain }}>
             <span className="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
           </button>
-          <h1 className="text-lg font-bold tracking-tight text-white">Gut Zoomer Profile</h1>
-          <button className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors text-white">
+          <h1 className="text-lg font-bold tracking-tight" style={{ color: theme.colors.textMain }}>Gut Zoomer Profile</h1>
+          <button className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors" style={{ color: theme.colors.textMain }}>
             <span className="material-symbols-outlined text-[24px]">ios_share</span>
           </button>
         </div>
@@ -823,12 +854,12 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
       {/* Content */}
       <main className="flex-1 w-full max-w-4xl mx-auto flex flex-col px-4 pt-6 pb-28 space-y-6 overflow-y-auto">
         {/* Warning Banner */}
-        <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: 'rgba(255, 92, 0, 0.1)', border: '1px solid rgba(255, 92, 0, 0.2)' }}>
-          <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ color: '#ff5c00' }}>history</span>
+        <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: 'rgba(255, 112, 67, 0.1)', border: '1px solid rgba(255, 112, 67, 0.2)' }}>
+          <span className="material-symbols-outlined shrink-0 mt-0.5" style={{ color: '#FF7043' }}>history</span>
           <div className="flex-1">
-            <h3 className="text-sm font-bold" style={{ color: '#ff5c00' }}>Result data is 6 months old</h3>
-            <p className="text-xs text-gray-300 mt-1 mb-2">Your microbiome changes over time. Retest to track your progress accurately.</p>
-            <button className="text-xs text-white px-3 py-1.5 rounded-lg font-semibold hover:brightness-110 transition-colors shadow-sm" style={{ background: '#ff5c00' }}>
+            <h3 className="text-sm font-bold" style={{ color: '#FF7043' }}>Result data is 6 months old</h3>
+            <p className="text-xs mt-1 mb-2" style={{ color: theme.colors.textLight }}>Your microbiome changes over time. Retest to track your progress accurately.</p>
+            <button className="text-xs px-3 py-1.5 rounded-lg font-semibold hover:brightness-110 transition-colors shadow-sm" style={{ background: '#FF7043', color: 'white' }}>
               Order New Kit
             </button>
           </div>
@@ -837,23 +868,23 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
         {/* North Star Metric */}
         <section className="flex flex-col items-center justify-center space-y-4 py-2">
           <div className="relative w-56 h-56 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full blur-2xl transform scale-90" style={{ background: 'rgba(13, 242, 128, 0.1)' }}></div>
+            <div className="absolute inset-0 rounded-full blur-2xl transform scale-90" style={{ background: 'rgba(0, 191, 165, 0.1)' }}></div>
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle className="text-white/5" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeWidth="6"></circle>
-              <circle style={{ color: '#0df280' }} cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeDasharray="263.89" strokeDashoffset="47.5" strokeLinecap="round" strokeWidth="6"></circle>
+              <circle className="text-[rgba(74,66,56,0.08)]" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeWidth="6"></circle>
+              <circle style={{ color: '#00BFA5' }} cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeDasharray="263.89" strokeDashoffset="47.5" strokeLinecap="round" strokeWidth="6"></circle>
             </svg>
             <div className="absolute flex flex-col items-center justify-center text-center">
-              <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Resilience</span>
-              <span className="text-6xl font-extrabold text-white tracking-tighter leading-none">82</span>
-              <div className="flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full" style={{ background: 'rgba(13, 242, 128, 0.2)' }}>
-                <span className="material-symbols-outlined text-[14px]" style={{ color: '#0df280' }}>trending_up</span>
-                <span className="text-xs font-bold" style={{ color: '#0df280' }}>+3 pts</span>
+              <span className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: theme.colors.textLight }}>Resilience</span>
+              <span className="text-6xl font-extrabold tracking-tighter leading-none" style={{ color: theme.colors.textMain }}>82</span>
+              <div className="flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full" style={{ background: 'rgba(0, 191, 165, 0.15)' }}>
+                <span className="material-symbols-outlined text-[14px]" style={{ color: '#00BFA5' }}>trending_up</span>
+                <span className="text-xs font-bold" style={{ color: '#00BFA5' }}>+3 pts</span>
               </div>
             </div>
           </div>
           <div className="text-center">
-            <h2 className="text-white font-bold text-xl">Gut Resilience Score</h2>
-            <p className="text-gray-400 text-xs mt-1">High resilience against dietary stress.</p>
+            <h2 className="font-bold text-xl" style={{ color: theme.colors.textMain }}>Gut Resilience Score</h2>
+            <p className="text-xs mt-1" style={{ color: theme.colors.textLight }}>High resilience against dietary stress.</p>
           </div>
         </section>
 
@@ -864,10 +895,10 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
             { label: 'Inflammation', value: 'Low', status: 'Optimal', icon: 'check' },
             { label: 'Phyla', value: '88%', status: 'Fair', icon: 'remove', warning: true },
           ].map((item, i) => (
-            <div key={i} className="rounded-xl p-3 border shadow-sm flex flex-col items-center text-center space-y-1" style={{ background: '#1a2c24', borderColor: 'rgba(255,255,255,0.05)' }}>
-              <span className="text-xs text-gray-400 font-medium">{item.label}</span>
-              <span className="text-xl font-bold text-white">{item.value}</span>
-              <div className="flex items-center text-[10px] font-bold gap-0.5" style={{ color: item.warning ? '#ff5c00' : '#0df280' }}>
+            <div key={i} className="rounded-xl p-3 border shadow-sm flex flex-col items-center text-center space-y-1" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+              <span className="text-xs font-medium" style={{ color: theme.colors.textLight }}>{item.label}</span>
+              <span className="text-xl font-bold" style={{ color: theme.colors.textMain }}>{item.value}</span>
+              <div className="flex items-center text-[10px] font-bold gap-0.5" style={{ color: item.warning ? '#FF7043' : '#00BFA5' }}>
                 <span className="material-symbols-outlined text-[12px]">{item.icon}</span>
                 <span>{item.status}</span>
               </div>
@@ -877,12 +908,13 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
 
         {/* Tab Toggle */}
         <section className="flex flex-col gap-4">
-          <div className="flex p-1 rounded-lg" style={{ background: '#1a2c24' }}>
+          <div className="flex p-1 rounded-lg" style={{ background: '#F5F0E8' }}>
             {['latest', 'trends'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-1.5 text-xs font-semibold text-center rounded-md transition-all duration-200 ${activeTab === tab ? 'bg-[#2A3F35] text-white shadow-sm' : 'text-gray-400'}`}
+                className={`flex-1 py-1.5 text-xs font-semibold text-center rounded-md transition-all duration-200 ${activeTab === tab ? 'bg-white shadow-sm' : ''}`}
+                style={{ color: activeTab === tab ? theme.colors.textMain : theme.colors.textLight }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
@@ -890,19 +922,19 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
           </div>
 
           {/* Wearable Toggle */}
-          <div className="flex items-center justify-between p-3 rounded-xl border" style={{ background: '#1a2c24', borderColor: 'rgba(255,255,255,0.05)' }}>
+          <div className="flex items-center justify-between p-3 rounded-xl border" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(0, 191, 165, 0.12)', color: '#00BFA5' }}>
                 <span className="material-symbols-outlined text-lg">watch</span>
               </div>
               <div>
-                <p className="text-sm font-bold text-white">Wearable Insights</p>
-                <p className="text-[10px] text-gray-400">Overlay activity & sleep data</p>
+                <p className="text-sm font-bold" style={{ color: theme.colors.textMain }}>Wearable Insights</p>
+                <p className="text-[10px]" style={{ color: theme.colors.textLight }}>Overlay activity & sleep data</p>
               </div>
             </div>
             <button
               onClick={() => setWearableEnabled(!wearableEnabled)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${wearableEnabled ? 'bg-blue-500' : 'bg-gray-700'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${wearableEnabled ? 'bg-[#00BFA5]' : 'bg-gray-300'}`}
             >
               <div className={`absolute top-[2px] w-5 h-5 bg-white rounded-full transition-transform ${wearableEnabled ? 'translate-x-[22px]' : 'translate-x-[2px]'}`}></div>
             </button>
@@ -913,7 +945,7 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">Detailed Metrics</h3>
-            <button className="text-xs font-bold flex items-center gap-1" style={{ color: '#0df280' }}>
+            <button className="text-xs font-bold flex items-center gap-1" style={{ color: '#F59E0B' }}>
               <span>Sort by Status</span>
               <span className="material-symbols-outlined text-base">sort</span>
             </button>
@@ -922,28 +954,28 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
             {gutMetrics.map((metric, i) => {
               const statusStyles = getStatusStyles(metric.status);
               return (
-                <div key={i} className="rounded-xl p-4 shadow-sm border" style={{ background: '#1a2c24', borderColor: 'rgba(255,255,255,0.05)' }}>
+                <div key={i} className="rounded-xl p-4 shadow-sm border" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-bold text-white text-sm">{metric.name}</h4>
-                      <p className="text-xs text-gray-400">{metric.category}</p>
+                      <h4 className="font-bold text-sm" style={{ color: theme.colors.textMain }}>{metric.name}</h4>
+                      <p className="text-xs" style={{ color: theme.colors.textLight }}>{metric.category}</p>
                     </div>
                     <div className="text-right">
-                      <span className="block font-bold text-white">{metric.value} {metric.unit && <span className="text-[10px] font-normal text-gray-500">{metric.unit}</span>}</span>
+                      <span className="block font-bold" style={{ color: theme.colors.textMain }}>{metric.value} {metric.unit && <span className="text-[10px] font-normal" style={{ color: theme.colors.textLight }}>{metric.unit}</span>}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>{metric.status}</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-[1fr_60px] gap-3 items-center">
-                    <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(74, 66, 56, 0.1)' }}>
                       <div className="absolute left-0 top-0 bottom-0 rounded-full transition-all duration-500" style={{ width: `${metric.barWidth}%`, background: getBarColor(metric.status) }}></div>
                     </div>
                     <div className="h-6 w-full">
                       <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 60 20">
-                        <path 
+                        <path
                           d={metric.trend === 'up' ? "M0,15 L10,12 L20,16 L30,8 L40,10 L50,5 L60,8" : metric.trend === 'down' ? "M0,5 L10,8 L20,10 L30,12 L40,15 L50,15 L60,18" : "M0,10 L60,10"}
-                          fill="none" 
-                          stroke={getBarColor(metric.status)} 
-                          strokeLinecap="round" 
+                          fill="none"
+                          stroke={getBarColor(metric.status)}
+                          strokeLinecap="round"
                           strokeWidth="1.5"
                           strokeDasharray={metric.trend === 'stable' ? "4 2" : "none"}
                         ></path>
@@ -954,20 +986,20 @@ const ZoomerDetailView = ({ zoomer, onBack }) => {
               );
             })}
           </div>
-          <button className="w-full py-3 text-sm font-medium hover:text-white transition-colors" style={{ color: '#0df280' }}>
+          <button className="w-full py-3 text-sm font-medium transition-colors" style={{ color: theme.colors.primary }}>
             View All 24 Markers
           </button>
         </section>
       </main>
 
       {/* Fixed Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 z-40" style={{ background: 'linear-gradient(to top, #102219, rgba(16, 34, 25, 0.9), transparent)' }}>
+      <div className="fixed bottom-0 left-0 right-0 p-4 z-40" style={{ background: 'linear-gradient(to top, #FFFBF5, rgba(255, 251, 245, 0.95), transparent)' }}>
         <div className="max-w-4xl mx-auto flex gap-3">
-          <button className="flex-1 border text-white font-bold py-4 rounded-xl shadow-lg hover:bg-neutral-800 transition-all flex items-center justify-center gap-2" style={{ background: '#1a2c24', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <button className="flex-1 border font-bold py-4 rounded-xl shadow-lg hover:shadow-md transition-all flex items-center justify-center gap-2" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.1)', color: theme.colors.textMain }}>
             <span className="material-symbols-outlined">calendar_month</span>
             <span>Consult</span>
           </button>
-          <button className="flex-[2] font-bold py-4 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2" style={{ background: '#0df280', color: '#102219', boxShadow: '0 10px 25px -5px rgba(13, 242, 128, 0.3)' }}>
+          <button className="flex-[2] font-bold py-4 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D2416', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}>
             <span className="material-symbols-outlined">download</span>
             <span>Report</span>
           </button>
@@ -991,30 +1023,30 @@ const DailyCheckIn = ({ onBack }) => {
 
   const getTaskColors = (color) => {
     switch (color) {
-      case 'green': return { bg: 'rgba(74, 222, 128, 0.2)', border: 'rgba(74, 222, 128, 0.3)', text: '#4ade80', gradient: 'from-green-500/20 to-emerald-600/20' };
-      case 'yellow': return { bg: 'rgba(251, 191, 36, 0.2)', border: 'rgba(251, 191, 36, 0.3)', text: '#fbbf24', gradient: 'from-yellow-400 to-amber-500' };
-      case 'orange': return { bg: 'rgba(251, 146, 60, 0.2)', border: 'rgba(251, 146, 60, 0.3)', text: '#fb923c', gradient: 'from-orange-400 to-orange-600' };
-      default: return { bg: 'rgba(140, 43, 238, 0.2)', border: 'rgba(140, 43, 238, 0.3)', text: '#8c2bee', gradient: 'from-purple-500 to-purple-700' };
+      case 'green': return { bg: 'rgba(0, 191, 165, 0.2)', border: 'rgba(0, 191, 165, 0.4)', text: '#00BFA5', gradient: 'from-teal-500/30 to-teal-400/30' };
+      case 'yellow': return { bg: 'rgba(255, 167, 38, 0.2)', border: 'rgba(255, 167, 38, 0.4)', text: '#FFA726', gradient: 'from-amber-400 to-orange-500' };
+      case 'orange': return { bg: 'rgba(255, 112, 67, 0.2)', border: 'rgba(255, 112, 67, 0.4)', text: '#FF7043', gradient: 'from-orange-400 to-coral-600' };
+      default: return { bg: 'rgba(245, 158, 11, 0.2)', border: 'rgba(245, 158, 11, 0.4)', text: '#F59E0B', gradient: 'from-amber-400 to-amber-500' };
     }
   };
 
   return (
-    <div className="relative mx-auto w-full min-h-screen overflow-hidden flex flex-col" style={{ background: theme.colors.checkInBgDark }}>
-      {/* Header Gradient */}
-      <div className="relative z-10 w-full rounded-b-3xl pb-8 pt-12" style={{ background: 'linear-gradient(to bottom right, #8c2bee, #6366f1, #3b82f6)', boxShadow: '0 20px 50px -12px rgba(140,43,238,0.4)' }}>
-        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay rounded-b-3xl"></div>
-        
+    <div className="relative mx-auto w-full min-h-screen overflow-hidden flex flex-col" style={{ background: theme.colors.backgroundLight }}>
+      {/* Header Gradient - Vibrant Gold/Apricot */}
+      <div className="relative z-10 w-full rounded-b-3xl pb-8 pt-12" style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', boxShadow: '0 20px 50px -12px rgba(245, 158, 11, 0.4)' }}>
+        <div className="absolute inset-0 opacity-15 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay rounded-b-3xl"></div>
+
         <div className="relative px-6 flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <button onClick={onBack} className="size-10 rounded-full bg-white/10 flex items-center justify-center">
+            <button onClick={onBack} className="size-10 rounded-full bg-white/20 flex items-center justify-center">
               <span className="material-symbols-outlined text-white">arrow_back</span>
             </button>
             <div className="flex flex-col">
-              <span className="text-white/80 text-sm font-medium">Hello,</span>
+              <span className="text-white/90 text-sm font-medium">Hello,</span>
               <h2 className="text-white text-xl font-bold leading-tight">Alex!</h2>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm px-3 py-1.5 border border-white/10 shadow-sm">
+          <div className="flex items-center gap-1.5 rounded-full bg-white/25 backdrop-blur-sm px-3 py-1.5 border border-white/20 shadow-sm">
             <span className="text-lg">🔥</span>
             <span className="text-white text-sm font-bold">{streak} Day Streak</span>
           </div>
@@ -1022,7 +1054,7 @@ const DailyCheckIn = ({ onBack }) => {
 
         <div className="relative px-6">
           <h1 className="text-white text-4xl font-extrabold tracking-tight mb-1 drop-shadow-sm">Oct 24</h1>
-          <p className="text-white/80 text-lg font-medium">Tuesday Check-in</p>
+          <p className="text-white/90 text-lg font-medium">Tuesday Check-in</p>
         </div>
       </div>
 
@@ -1033,21 +1065,21 @@ const DailyCheckIn = ({ onBack }) => {
           return (
             <div
               key={task.id}
-              className={`group relative overflow-hidden rounded-3xl p-5 transition-all duration-300 shadow-lg ${task.completed ? 'border' : ''}`}
+              className={`group relative overflow-hidden rounded-3xl p-5 transition-all duration-300 shadow-sm ${task.completed ? 'border' : ''}`}
               style={{
-                background: task.completed ? theme.colors.checkInSurface : 'rgba(45, 36, 56, 0.4)',
+                background: task.completed ? '#FFFFFF' : 'rgba(255, 255, 255, 0.6)',
                 backdropFilter: 'blur(12px)',
-                border: task.completed ? `1px solid ${colors.border}` : '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: task.completed ? `0 0 30px ${colors.bg}` : undefined
+                border: task.completed ? `1px solid ${colors.border}` : '1px solid rgba(74, 66, 56, 0.08)',
+                boxShadow: task.completed ? `0 4px 20px ${colors.bg}` : '0 2px 8px rgba(74, 66, 56, 0.04)'
               }}
             >
               {/* Confetti for completed */}
               {task.completed && (
                 <div className="absolute inset-0 z-0 overflow-hidden opacity-100 pointer-events-none">
-                  <div className="absolute top-1/4 left-1/4 h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+                  <div className="absolute top-1/4 left-1/4 h-2 w-2 rounded-full bg-amber-400 animate-pulse"></div>
                   <div className="absolute top-1/3 right-1/4 h-3 w-1 bg-yellow-300 rotate-45"></div>
-                  <div className="absolute bottom-1/3 left-1/3 h-2 w-2 bg-blue-400 rounded-full"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-green-900/40 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-1/3 left-1/3 h-2 w-2 bg-orange-300 rounded-full"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-amber-100/50 via-transparent to-transparent"></div>
                 </div>
               )}
 
@@ -1062,10 +1094,10 @@ const DailyCheckIn = ({ onBack }) => {
                 </div>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <div 
+                  <div
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border"
-                    style={{ 
-                      background: `${colors.bg}`, 
+                    style={{
+                      background: `${colors.bg}`,
                       borderColor: colors.border,
                       color: colors.text,
                       boxShadow: `0 0 15px ${colors.bg}`
@@ -1074,8 +1106,8 @@ const DailyCheckIn = ({ onBack }) => {
                     <span className="material-symbols-outlined text-3xl">{task.icon}</span>
                   </div>
                   <div className="flex flex-col">
-                    <h3 className="text-lg font-bold" style={{ color: task.completed ? colors.text : 'white' }}>{task.title}</h3>
-                    <p className="text-xs font-medium" style={{ color: task.completed ? `${colors.text}80` : 'rgba(255,255,255,0.4)' }}>{task.description}</p>
+                    <h3 className="text-lg font-bold" style={{ color: task.completed ? colors.text : theme.colors.textMain }}>{task.title}</h3>
+                    <p className="text-xs font-medium" style={{ color: task.completed ? `${colors.text}cc` : theme.colors.textLight }}>{task.description}</p>
                   </div>
                 </div>
 
@@ -1085,15 +1117,15 @@ const DailyCheckIn = ({ onBack }) => {
                     <span className="font-bold text-sm tracking-wide" style={{ color: colors.text }}>Excellent Job!</span>
                   </div>
                 ) : (
-                  <div 
+                  <div
                     className="relative h-14 w-full rounded-full border p-1.5 shadow-inner cursor-pointer"
-                    style={{ background: 'rgba(26, 20, 37, 0.6)', borderColor: 'rgba(255,255,255,0.1)' }}
+                    style={{ background: 'rgba(245, 240, 232, 0.6)', borderColor: 'rgba(74, 66, 56, 0.1)' }}
                     onClick={() => completeTask(task.id)}
                   >
-                    <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                      <span className="text-white/60 text-xs font-bold tracking-[0.2em] uppercase">Swipe to Complete »</span>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-50">
+                      <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: theme.colors.textLight }}>Swipe to Complete »</span>
                     </div>
-                    <div 
+                    <div
                       className="h-full w-14 rounded-full flex items-center justify-center text-white cursor-pointer z-10 transition-all hover:translate-x-2"
                       style={{ background: `linear-gradient(to right, ${colors.text}, ${colors.text}dd)`, boxShadow: `0 0 15px ${colors.bg}` }}
                     >
@@ -1109,18 +1141,18 @@ const DailyCheckIn = ({ onBack }) => {
 
       {/* Progress Bar */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[400px]">
-        <div className="flex h-16 w-full items-center justify-between rounded-full px-6 shadow-xl" style={{ background: 'rgba(45, 36, 56, 0.9)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="flex h-16 w-full items-center justify-between rounded-full px-6 shadow-lg" style={{ background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.6)' }}>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: theme.colors.checkInPrimary }}>Daily Progress</span>
-            <span className="text-white font-bold text-sm">{completedCount} of {tasks.length} tasks complete</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: theme.colors.primary }}>Daily Progress</span>
+            <span className="font-bold text-sm" style={{ color: theme.colors.textMain }}>{completedCount} of {tasks.length} tasks complete</span>
           </div>
           <div className="relative h-10 w-10 shrink-0">
             <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
-              <path className="text-white/10" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3"></path>
-              <path style={{ color: theme.colors.checkInPrimary, filter: 'drop-shadow(0 0 8px rgba(140,43,238,0.8))' }} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray={`${progress}, 100`} strokeLinecap="round" strokeWidth="3"></path>
+              <path className="text-[rgba(74,66,56,0.1)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3"></path>
+              <path style={{ color: theme.colors.primary, filter: 'drop-shadow(0 0 8px rgba(244, 202, 37, 0.6))' }} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray={`${progress}, 100`} strokeLinecap="round" strokeWidth="3"></path>
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-white">{progress}%</span>
+              <span className="text-[10px] font-bold" style={{ color: theme.colors.textMain }}>{progress}%</span>
             </div>
           </div>
         </div>
@@ -1132,31 +1164,32 @@ const DailyCheckIn = ({ onBack }) => {
 // ==================== MAIN DASHBOARD ====================
 const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
   return (
-    <div 
-      className="text-white h-screen w-full flex flex-col relative overflow-y-auto"
-      style={{ 
-        background: theme.colors.backgroundDark,
-        backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+    <div
+      className="h-screen w-full flex flex-col relative overflow-y-auto"
+      style={{
+        color: theme.colors.textMain,
+        background: theme.colors.backgroundLight,
+        backgroundImage: 'linear-gradient(rgba(74, 66, 56, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 66, 56, 0.02) 1px, transparent 1px)',
         backgroundSize: '40px 40px'
       }}
     >
       {/* Ambient Background */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[120px]" style={{ background: 'rgba(13, 242, 128, 0.05)' }}></div>
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-[100px]" style={{ background: 'rgba(59, 130, 246, 0.05)' }}></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[120px]" style={{ background: 'rgba(245, 158, 11, 0.08)' }}></div>
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-[100px]" style={{ background: 'rgba(0, 191, 165, 0.06)' }}></div>
       </div>
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-4 md:px-6 py-4 bg-transparent shrink-0">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center size-10 rounded-full bg-white/5 backdrop-blur-sm border border-white/10" style={{ color: '#0df280', boxShadow: '0 0 20px rgba(13, 242, 128, 0.3)' }}>
+          <div className="flex items-center justify-center size-10 rounded-full bg-white backdrop-blur-sm border border-white/40" style={{ color: theme.colors.primary, boxShadow: '0 4px 16px rgba(245, 158, 11, 0.25)' }}>
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>hexagon</span>
           </div>
-          <h1 className="text-xl font-bold tracking-tight">Wellness Map</h1>
+          <h1 className="text-xl font-bold tracking-tight" style={{ color: theme.colors.textMain }}>Wellness Map</h1>
         </div>
-        <button className="size-10 rounded-full overflow-hidden border border-white/10">
-          <img 
-            alt="Profile" 
+        <button className="size-10 rounded-full overflow-hidden border border-white/40 shadow-sm">
+          <img
+            alt="Profile"
             className="w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG3Qovmsn0SQwnsAkws-_RPagJuDV67YPGlu7kBx3MCaaxNNHZ6YaH1kr9GC8bc9WMCWJVzoBHWUm6LwHrNvPloo6_AQEaXfpbjLdb01c7OW44XK5ZAqOijSweD4GWYZ6Y1Hb5HEeqgCOosXDD3pKA4IoYhhZjYjTx3Uwlybh2fnNQLxdIqxT_ZKVgeCy81xYlZCQKVBnAijr3LtKlT2zli_14bfW6lokAy9UbKa5M6azNpOFuG7aNWa1g-_TMjpIvv_Y8RMmuHYk"
           />
@@ -1166,7 +1199,7 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
       {/* Health Journey Timeline */}
       <div className="relative z-20 w-full pt-1 pb-1 pl-4 shrink-0">
         <div className="flex items-center justify-between pr-6 mb-3">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-2">Health Journey</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest pl-2" style={{ color: theme.colors.textLight }}>Health Journey</span>
         </div>
         <HealthJourneyTimeline />
       </div>
@@ -1175,17 +1208,17 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center w-full min-h-0 overflow-visible">
         {/* Floating Notification Badge - centered above the map */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 animate-float">
-          <div className="flex items-center gap-3 pl-2 pr-4 py-2 backdrop-blur-md border rounded-full shadow-lg" style={{ background: 'rgba(27, 39, 33, 0.9)', borderColor: 'rgba(13, 242, 128, 0.2)' }}>
-            <div className="size-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(13, 242, 128, 0.2)', color: '#0df280' }}>
+          <div className="flex items-center gap-3 pl-2 pr-4 py-2 backdrop-blur-md border rounded-full shadow-lg" style={{ background: 'rgba(255, 255, 255, 0.85)', borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+            <div className="size-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(244, 202, 37, 0.15)', color: theme.colors.primary }}>
               <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>medical_services</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">New Result</span>
-              <span className="text-xs font-medium text-white">Genetics profile unlocked</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold" style={{ color: theme.colors.textLight }}>New Result</span>
+              <span className="text-xs font-medium" style={{ color: theme.colors.textMain }}>Genetics profile unlocked</span>
             </div>
           </div>
         </div>
-        
+
         {/* Centered map container - use padding to account for overflow */}
         <div className="flex items-center justify-center w-full mt-8 px-8">
           <WellnessMap onZoomerClick={onZoomerClick} />
@@ -1193,56 +1226,56 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
       </main>
 
       {/* Bottom Sheet */}
-      <div 
+      <div
         className="relative z-20 w-full rounded-t-3xl border-t pb-8"
-        style={{ 
-          background: 'rgba(27, 39, 33, 0.8)',
-          backdropFilter: 'blur(24px)',
-          borderColor: 'rgba(255,255,255,0.05)',
-          boxShadow: '0 -10px 40px rgba(0,0,0,0.5)'
+        style={{
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(16px)',
+          borderColor: 'rgba(255,255,255,0.5)',
+          boxShadow: '0 -4px 24px rgba(74, 66, 56, 0.08)'
         }}
       >
         <div className="flex justify-center pt-3 pb-1">
-          <div className="h-1 w-12 rounded-full bg-white/10"></div>
+          <div className="h-1 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
         </div>
         <div className="px-4 md:px-6 pt-2 max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Trend & Activity</h2>
-            <span className="text-xs font-medium text-white/40">Today, 24 Oct</span>
+            <h2 className="text-xl font-bold" style={{ color: theme.colors.textMain }}>Trend & Activity</h2>
+            <span className="text-xs font-medium" style={{ color: theme.colors.textLight }}>Today, 24 Oct</span>
           </div>
-          
+
           {/* Cards Grid - Responsive */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <TrendCard />
             <WearableCard />
             {/* Extra cards for larger screens */}
-            <div className="hidden md:block bg-[#151f19] rounded-2xl p-4 border border-white/5 relative overflow-hidden shadow-lg">
-              <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block mb-2">Daily Check-in</span>
+            <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+              <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Daily Check-in</span>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🔥</span>
-                <span className="text-lg font-bold text-white">7 Day</span>
+                <span className="text-lg font-bold" style={{ color: theme.colors.textMain }}>7 Day</span>
               </div>
-              <span className="text-xs text-gray-400">Streak</span>
+              <span className="text-xs" style={{ color: theme.colors.textLight }}>Streak</span>
             </div>
-            <div className="hidden md:block bg-[#151f19] rounded-2xl p-4 border border-white/5 relative overflow-hidden shadow-lg">
-              <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block mb-2">Next Appointment</span>
-              <span className="text-sm font-bold text-white block">Dr. Chen</span>
-              <span className="text-xs text-gray-400">Nov 12, 10:00 AM</span>
+            <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+              <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Next Appointment</span>
+              <span className="text-sm font-bold block" style={{ color: theme.colors.textMain }}>Dr. Chen</span>
+              <span className="text-xs" style={{ color: theme.colors.textLight }}>Nov 12, 10:00 AM</span>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={onCheckInClick}
-              className="flex-1 h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-base transition-colors active:scale-95 duration-200"
-              style={{ background: '#0df280', color: '#111814', boxShadow: '0 0 20px rgba(13, 242, 128, 0.3)' }}
+              className="flex-1 h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-base transition-all active:scale-95 duration-200"
+              style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D1B00', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}
             >
               <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>qr_code_scanner</span>
               Daily Goals
             </button>
-            <button className="size-14 rounded-xl flex items-center justify-center hover:bg-[#324239] transition-colors" style={{ background: '#27352d' }}>
-              <span className="material-symbols-outlined text-white" style={{ fontSize: '24px' }}>history</span>
+            <button className="size-14 rounded-xl flex items-center justify-center transition-colors" style={{ background: '#F5F0E8', color: theme.colors.textMain }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>history</span>
             </button>
           </div>
         </div>

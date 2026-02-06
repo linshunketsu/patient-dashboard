@@ -80,19 +80,19 @@ const ProgressBarIndicator = ({
     return 50; // Unknown
   }, [numericValue, status, rangeConfig]);
 
-  // Get bar color based on status
+  // Get bar color based on status - using Amber + Teal color system
   const getBarColor = () => {
     switch (status) {
       case 'Optimal':
-        return '#0df280'; // Dark green
+        return '#00BFA5'; // Teal
       case 'Normal':
-        return '#6ee7b7'; // Light green
+        return '#4DD0E1'; // Light teal
       case 'Moderate':
-        return '#fbbf24'; // Amber
+        return '#FFA726'; // Amber-orange
       case 'Low':
-        return '#ef4444'; // Red
+        return '#E91E63'; // Rose
       case 'High':
-        return '#ff5c00'; // Orange
+        return '#FF7043'; // Coral
       default:
         return '#9ca3af'; // Gray
     }
@@ -105,16 +105,16 @@ const ProgressBarIndicator = ({
     <div className={`w-full ${className}`}>
       <div className="flex items-center gap-3">
         {/* Label */}
-        <span className={`text-gray-500 ${compact ? 'text-xs' : 'text-sm'}`}>Health Score</span>
+        <span className={`${compact ? 'text-xs' : 'text-sm'}`} style={{ color: '#6B5D4F' }}>Health Score</span>
 
         {/* Score percentage */}
-        <span className={`font-bold text-white ${compact ? 'text-sm' : 'text-base'}`}>
+        <span className={`font-bold ${compact ? 'text-sm' : 'text-base'}`} style={{ color: '#2D2416' }}>
           {Math.round(fillPercent)}
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className={`relative w-full ${barHeight} rounded-full overflow-hidden mt-2`} style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+      <div className={`relative w-full ${barHeight} rounded-full overflow-hidden mt-2`} style={{ background: 'rgba(74, 66, 56, 0.12)' }}>
         {/* Fill bar */}
         <div
           className="absolute top-0 bottom-0 left-0 rounded-full transition-all duration-500 ease-out"

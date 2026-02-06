@@ -25,7 +25,7 @@ const ViewToggle = ({ currentMode, onModeChange, className = '' }) => {
   ];
 
   return (
-    <div className={`flex items-center bg-white/5 rounded-full p-1 ${className}`}>
+    <div className={`flex items-center rounded-full p-1 ${className}`} style={{ background: '#F5F0E8' }}>
       {modes.map((mode) => {
         const isActive = currentMode === mode.id;
 
@@ -35,9 +35,12 @@ const ViewToggle = ({ currentMode, onModeChange, className = '' }) => {
             onClick={() => onModeChange(mode.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
               isActive
-                ? 'bg-[#0df280] text-[#0a110e] shadow-lg'
-                : 'text-gray-400 hover:text-white hover:bg-white/10'
+                ? 'bg-white shadow-sm'
+                : ''
             }`}
+            style={{
+              color: isActive ? '#2D2416' : '#6B5D4F'
+            }}
             title={mode.description}
           >
             <span className="material-symbols-outlined text-[16px]">

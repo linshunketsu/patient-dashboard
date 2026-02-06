@@ -5,13 +5,26 @@ import ProgressBarIndicator from './ProgressBarIndicator.jsx';
 import ViewToggle from './ViewToggle.jsx';
 import { getReferenceRange, calculateStatus } from '../data/reference-ranges-config.js';
 
-// Theme tokens matching the dashboard
+// Theme tokens matching the dashboard - Amber + Teal Color System
 const theme = {
   colors: {
-    primary: '#0df280',
-    primaryDim: 'rgba(13, 242, 128, 0.1)',
-    backgroundDark: '#102219',
-    surfaceDark: '#1a2c24',
+    primary: '#F59E0B',
+    primaryDark: '#D97706',
+    primaryDim: 'rgba(245, 158, 11, 0.12)',
+    backgroundLight: '#FFFBF5',
+    backgroundDark: '#1F1A14',
+    surfaceDark: '#FFFFFF',
+    surfaceLight: '#FFFFFF',
+    textMain: '#2D2416',
+    textLight: '#6B5D4F',
+    statusOptimal: '#00BFA5',
+    statusWarning: '#FF7043',
+    statusAlert: '#E91E63',
+    statusModerate: '#FFA726',
+    terracotta: '#CC7A50',
+    dustyRose: '#E8A0A0',
+    sand: '#E8DFD4',
+    teal: '#00BFA5',
   },
 };
 
@@ -276,21 +289,23 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
 
   const getStatusStyles = (status) => {
     switch (status) {
-      case 'Optimal': case 'Normal': return { bg: 'rgba(13, 242, 128, 0.1)', color: '#0df280', border: 'rgba(13, 242, 128, 0.2)' };
-      case 'High': return { bg: 'rgba(255, 92, 0, 0.1)', color: '#ff5c00', border: 'rgba(255, 92, 0, 0.2)' };
-      case 'Low': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'rgba(239, 68, 68, 0.2)' };
-      case 'Moderate': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24', border: 'rgba(251, 191, 36, 0.2)' };
-      default: return { bg: 'rgba(13, 242, 128, 0.1)', color: '#0df280', border: 'rgba(13, 242, 128, 0.2)' };
+      case 'Optimal': case 'Normal': return { bg: 'rgba(0, 191, 165, 0.15)', color: theme.colors.statusOptimal, border: 'rgba(0, 191, 165, 0.3)' };
+      case 'High': return { bg: 'rgba(255, 112, 67, 0.15)', color: theme.colors.statusWarning, border: 'rgba(255, 112, 67, 0.3)' };
+      case 'Low': return { bg: 'rgba(233, 30, 99, 0.15)', color: theme.colors.statusAlert, border: 'rgba(233, 30, 99, 0.3)' };
+      case 'Moderate': return { bg: 'rgba(255, 167, 38, 0.15)', color: theme.colors.statusModerate, border: 'rgba(255, 167, 38, 0.3)' };
+      case 'Good': return { bg: 'rgba(245, 158, 11, 0.15)', color: theme.colors.primary, border: 'rgba(245, 158, 11, 0.3)' };
+      default: return { bg: 'rgba(0, 191, 165, 0.15)', color: theme.colors.statusOptimal, border: 'rgba(0, 191, 165, 0.3)' };
     }
   };
 
   const getBarColor = (status) => {
     switch (status) {
-      case 'Optimal': case 'Normal': return '#0df280';
-      case 'High': return '#ff5c00';
-      case 'Low': return '#ef4444';
-      case 'Moderate': return '#fbbf24';
-      default: return '#0df280';
+      case 'Optimal': case 'Normal': return theme.colors.statusOptimal; // Teal
+      case 'High': return theme.colors.statusWarning; // Coral
+      case 'Low': return theme.colors.statusAlert; // Rose
+      case 'Moderate': return theme.colors.statusModerate; // Amber-orange
+      case 'Good': return theme.colors.primary; // Amber
+      default: return theme.colors.statusOptimal;
     }
   };
 
@@ -319,9 +334,9 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: theme.colors.backgroundDark }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: theme.colors.backgroundLight }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300 shrink-0" style={{ background: 'rgba(16, 34, 25, 0.9)', borderColor: 'rgba(255,255,255,0.05)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-300 shrink-0" style={{ background: 'rgba(255, 255, 255, 0.85)', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
         <div className="flex items-center justify-between px-4 h-16 max-w-4xl mx-auto w-full">
           <button
             onClick={() => {
@@ -331,17 +346,20 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                 onBack();
               }
             }}
-            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors text-white"
+            className="flex items-center justify-center w-10 h-10 rounded-full transition-colors"
+            style={{ color: theme.colors.textMain, hover: { background: 'rgba(74, 66, 56, 0.05)' } }}
           >
             <span className="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
           </button>
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined" style={{ color: theme.colors.primary }}>{getZoomerIcon(zoomer)}</span>
-            <h1 className="text-lg font-bold tracking-tight text-white">
+            <h1 className="text-lg font-bold tracking-tight" style={{ color: theme.colors.textMain }}>
               {zoomer === 'foundation' && selectedCategory ? selectedCategory : getZoomerLabel(zoomer)}
             </h1>
           </div>
-          <button className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors text-white">
+          <button className="flex items-center justify-center w-10 h-10 rounded-full transition-colors"
+            style={{ color: theme.colors.textMain, hover: { background: 'rgba(74, 66, 56, 0.05)' } }}
+          >
             <span className="material-symbols-outlined text-[24px]">ios_share</span>
           </button>
         </div>
@@ -353,9 +371,9 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {!(zoomer === 'foundation' && selectedCategory) && (
           <section className="flex flex-col items-center justify-center space-y-4 py-2">
           <div className="relative w-56 h-56 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full blur-2xl transform scale-90" style={{ background: 'rgba(13, 242, 128, 0.1)' }}></div>
+            <div className="absolute inset-0 rounded-full blur-2xl transform scale-90" style={{ background: 'rgba(245, 158, 11, 0.12)' }}></div>
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle className="text-white/5" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeWidth="6"></circle>
+              <circle className="text-[rgba(74,66,56,0.08)]" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" strokeWidth="6"></circle>
               <circle
                 style={{ color: getBarColor(zoomerInfo.status) }}
                 cx="50"
@@ -369,8 +387,8 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
               ></circle>
             </svg>
             <div className="absolute flex flex-col items-center justify-center text-center">
-              <span className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">{categoryName || 'Overall'}</span>
-              <span className="text-6xl font-extrabold text-white tracking-tighter leading-none">{zoomerInfo.score}</span>
+              <span className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: theme.colors.textLight }}>{categoryName || 'Overall'}</span>
+              <span className="text-6xl font-extrabold tracking-tighter leading-none" style={{ color: theme.colors.textMain }}>{zoomerInfo.score}</span>
               <div className="flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full" style={{ background: getStatusStyles(zoomerInfo.status).bg, color: getStatusStyles(zoomerInfo.status).color }}>
                 <span className="material-symbols-outlined text-[14px]">
                   {zoomerInfo.status === 'Optimal' || zoomerInfo.status === 'Good' ? 'check_circle' :
@@ -381,8 +399,8 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
             </div>
           </div>
           <div className="text-center">
-            <h2 className="text-white font-bold text-xl">{zoomerInfo.label}</h2>
-            <p className="text-gray-400 text-xs mt-1">
+            <h2 className="font-bold text-xl" style={{ color: theme.colors.textMain }}>{zoomerInfo.label}</h2>
+            <p className="text-xs mt-1" style={{ color: theme.colors.textLight }}>
               {zoomer === 'foundation' ? 'Comprehensive overview of all health categories' : `Detailed ${categoryName} biomarker analysis`}
             </p>
           </div>
@@ -392,7 +410,7 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {/* Foundation Level 1: Category Cards Overview */}
         {zoomer === 'foundation' && !selectedCategory && (
           <section className="space-y-4">
-            <h3 className="text-lg font-bold text-white">Health Categories Overview</h3>
+            <h3 className="text-lg font-bold" style={{ color: theme.colors.textMain }}>Health Categories Overview</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categoryData.map((cat, idx) => {
                 // Calculate category status based on actual marker statuses
@@ -408,23 +426,23 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                   <div
                     key={cat.name}
                     onClick={() => setSelectedCategory(cat.name)}
-                    className="rounded-xl p-4 border cursor-pointer hover:border-white/20 transition-all active:scale-[0.98]"
-                    style={{ background: theme.colors.surfaceDark, borderColor: 'rgba(255,255,255,0.05)' }}
+                    className="rounded-xl p-4 border cursor-pointer hover:shadow-md transition-all active:scale-[0.98]"
+                    style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-gray-400">category</span>
-                        <span className="font-bold text-white">{cat.name}</span>
+                        <span className="material-symbols-outlined" style={{ color: theme.colors.textLight }}>category</span>
+                        <span className="font-bold" style={{ color: theme.colors.textMain }}>{cat.name}</span>
                       </div>
                       <span className="text-xs px-2 py-1 rounded-full font-bold" style={{ ...getStatusStyles(catStatus) }}>
                         {catStatus}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-gray-400">{cat.markers.length} markers</span>
-                      <span className="text-white font-bold">{Math.round(catScore)}</span>
+                      <span style={{ color: theme.colors.textLight }}>{cat.markers.length} markers</span>
+                      <span className="font-bold" style={{ color: theme.colors.textMain }}>{Math.round(catScore)}</span>
                     </div>
-                    <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(74, 66, 56, 0.1)' }}>
                       <div className="absolute left-0 top-0 bottom-0 rounded-full transition-all" style={{ width: `${catScore}%`, background: getBarColor(catStatus) }}></div>
                     </div>
                   </div>
@@ -438,7 +456,7 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {zoomer === 'foundation' && selectedCategory && selectedCategoryData && (
           <section className="space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">{selectedCategory}</h3>
+              <h3 className="text-lg font-bold" style={{ color: theme.colors.textMain }}>{selectedCategory}</h3>
               <ViewToggle
                 currentMode={viewMode}
                 onModeChange={setViewMode}
@@ -450,30 +468,31 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                 const isExpanded = expandedMarker === mIdx;
 
                 return (
-                  <div key={mIdx} className="rounded-xl overflow-hidden border" style={{ background: theme.colors.surfaceDark, borderColor: 'rgba(255,255,255,0.05)' }}>
+                  <div key={mIdx} className="rounded-xl overflow-hidden border" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
                     {/* Main metric card */}
                     <div
-                      className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
+                      className="p-4 cursor-pointer transition-colors"
+                      style={{ hover: { background: 'rgba(74, 66, 56, 0.03)' } }}
                       onClick={() => setExpandedMarker(isExpanded ? null : mIdx)}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-white text-sm">{marker.name}</h4>
+                            <h4 className="font-bold text-sm" style={{ color: theme.colors.textMain }}>{marker.name}</h4>
                             {marker.testCode && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-gray-400">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(74, 66, 56, 0.05)', color: theme.colors.textLight }}>
                                 {marker.testCode}
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs mt-0.5" style={{ color: theme.colors.textLight }}>
                             {marker.referenceRange?.unit ? `Range: ${marker.referenceRange.min}-${marker.referenceRange.max} ${marker.referenceRange.unit}` : 'Reference range available'}
                           </p>
                         </div>
                         <div className="text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <span className="block font-bold text-white">{marker.value}</span>
-                            {marker.unit && <span className="text-xs text-gray-400">{marker.unit}</span>}
+                            <span className="block font-bold" style={{ color: theme.colors.textMain }}>{marker.value}</span>
+                            {marker.unit && <span className="text-xs" style={{ color: theme.colors.textLight }}>{marker.unit}</span>}
                           </div>
                           <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
                             {marker.status}
@@ -516,10 +535,10 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                         {/* Supplements */}
                         {categories[selectedCategory]?.supplements && categories[selectedCategory].supplements.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Supplements</h5>
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Supplements</h5>
                             <div className="flex flex-wrap gap-2">
                               {categories[selectedCategory].supplements.slice(0, 3).map((supp, sIdx) => (
-                                <span key={sIdx} className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(13, 242, 128, 0.1)', color: '#0df280', border: '1px solid rgba(13, 242, 128, 0.2)' }}>
+                                <span key={sIdx} className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(0, 191, 165, 0.15)', color: '#00BFA5', border: '1px solid rgba(0, 191, 165, 0.3)' }}>
                                   {supp.name} {supp.dosage && `(${supp.dosage})`}
                                 </span>
                               ))}
@@ -530,16 +549,16 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                         {/* Food Sources */}
                         {categories[selectedCategory]?.foods && categories[selectedCategory].foods.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Food Sources</h5>
-                            <p className="text-xs text-gray-300">{categories[selectedCategory].foods[0].sources}</p>
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Food Sources</h5>
+                            <p className="text-xs" style={{ color: '#6B5D4F' }}>{categories[selectedCategory].foods[0].sources}</p>
                           </div>
                         )}
 
                         {/* Lifestyle */}
                         {categories[selectedCategory]?.lifestyles && categories[selectedCategory].lifestyles.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Lifestyle</h5>
-                            <div className="flex items-center gap-2 text-xs text-gray-300">
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Lifestyle</h5>
+                            <div className="flex items-center gap-2 text-xs" style={{ color: '#6B5D4F' }}>
                               <span className="material-symbols-outlined text-[14px]" style={{ color: theme.colors.primary }}>self_improvement</span>
                               {categories[selectedCategory].lifestyles[0].name}
                             </div>
@@ -558,7 +577,7 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
         {zoomer !== 'foundation' && markersWithValues.length > 0 && (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">Detailed Markers</h3>
+              <h3 className="text-lg font-bold" style={{ color: theme.colors.textMain }}>Detailed Markers</h3>
               <button className="text-xs font-bold flex items-center gap-1" style={{ color: theme.colors.primary }}>
                 <span>Sort by Status</span>
                 <span className="material-symbols-outlined text-base">sort</span>
@@ -629,10 +648,10 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                         {/* Supplements */}
                         {categoryData?.supplements && categoryData.supplements.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Supplements</h5>
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Supplements</h5>
                             <div className="flex flex-wrap gap-2">
                               {categoryData.supplements.slice(0, 3).map((supp, idx) => (
-                                <span key={idx} className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(13, 242, 128, 0.1)', color: '#0df280', border: '1px solid rgba(13, 242, 128, 0.2)' }}>
+                                <span key={idx} className="text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(0, 191, 165, 0.15)', color: '#00BFA5', border: '1px solid rgba(0, 191, 165, 0.3)' }}>
                                   {supp.name} {supp.dosage && `(${supp.dosage})`}
                                 </span>
                               ))}
@@ -643,16 +662,16 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                         {/* Food Sources */}
                         {categoryData?.foods && categoryData.foods.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Food Sources</h5>
-                            <p className="text-xs text-gray-300">{categoryData.foods[0].sources}</p>
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Food Sources</h5>
+                            <p className="text-xs" style={{ color: '#6B5D4F' }}>{categoryData.foods[0].sources}</p>
                           </div>
                         )}
 
                         {/* Lifestyle */}
                         {categoryData?.lifestyles && categoryData.lifestyles.length > 0 && (
                           <div>
-                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Lifestyle</h5>
-                            <div className="flex items-center gap-2 text-xs text-gray-300">
+                            <h5 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: '#6B5D4F' }}>Lifestyle</h5>
+                            <div className="flex items-center gap-2 text-xs" style={{ color: '#6B5D4F' }}>
                               <span className="material-symbols-outlined text-[14px]" style={{ color: theme.colors.primary }}>self_improvement</span>
                               {categoryData.lifestyles[0].name}
                             </div>
@@ -664,7 +683,7 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                 );
               })}
             </div>
-            <button className="w-full py-3 text-sm font-medium hover:text-white transition-colors" style={{ color: theme.colors.primary }}>
+            <button className="w-full py-3 text-sm font-medium transition-colors" style={{ color: theme.colors.primary }}>
               View All {categoryData?.markers?.length || 0} Markers
             </button>
           </section>
@@ -678,10 +697,10 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
               { label: 'Supplements', value: categoryData.supplements?.length || 0, status: 'Available' },
               { label: 'Foods', value: categoryData.foods?.length || 0, status: 'Sources' },
             ].map((item, i) => (
-              <div key={i} className="rounded-xl p-3 border shadow-sm flex flex-col items-center text-center space-y-1" style={{ background: theme.colors.surfaceDark, borderColor: 'rgba(255,255,255,0.05)' }}>
-                <span className="text-xs text-gray-400 font-medium">{item.label}</span>
-                <span className="text-xl font-bold text-white">{item.value}</span>
-                <span className="text-[10px] text-gray-500">{item.status}</span>
+              <div key={i} className="rounded-xl p-3 border shadow-sm flex flex-col items-center text-center space-y-1" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+                <span className="text-xs font-medium" style={{ color: theme.colors.textLight }}>{item.label}</span>
+                <span className="text-xl font-bold" style={{ color: theme.colors.textMain }}>{item.value}</span>
+                <span className="text-[10px]" style={{ color: theme.colors.textLight }}>{item.status}</span>
               </div>
             ))}
           </section>
@@ -689,13 +708,13 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
       </main>
 
       {/* Fixed Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 z-40" style={{ background: 'linear-gradient(to top, #102219, rgba(16, 34, 25, 0.9), transparent)' }}>
+      <div className="fixed bottom-0 left-0 right-0 p-4 z-40" style={{ background: 'linear-gradient(to top, #FDFBF7, rgba(253, 251, 247, 0.95), transparent)' }}>
         <div className="max-w-4xl mx-auto flex gap-3">
-          <button className="flex-1 border text-white font-bold py-4 rounded-xl shadow-lg hover:bg-neutral-800 transition-all flex items-center justify-center gap-2" style={{ background: theme.colors.surfaceDark, borderColor: 'rgba(255,255,255,0.1)' }}>
+          <button className="flex-1 border font-bold py-4 rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.1)', color: theme.colors.textMain }}>
             <span className="material-symbols-outlined">calendar_month</span>
             <span>Consult</span>
           </button>
-          <button className="flex-[2] font-bold py-4 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2" style={{ background: theme.colors.primary, color: '#102219', boxShadow: '0 10px 25px -5px rgba(13, 242, 128, 0.3)' }}>
+          <button className="flex-[2] font-bold py-4 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2" style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D2416', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}>
             <span className="material-symbols-outlined">download</span>
             <span>Report</span>
           </button>
