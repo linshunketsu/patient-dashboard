@@ -23,16 +23,28 @@ const theme = {
 
 // ==================== ZOOMER DATA ====================
 const zoomerData = {
-  foundation: { score: 85, status: 'unlocked' },
-  neural: { score: 88, icon: 'psychology', status: 'unlocked', color: 'primary' },
-  cardio: { score: 64, icon: 'ecg_heart', status: 'unlocked', color: 'warning' },
-  gut: { score: 92, icon: 'spa', status: 'unlocked', color: 'primary' },
-  hormone: { score: 45, icon: 'bloodtype', status: 'unlocked', color: 'alert' },
-  immune: { score: 81, icon: 'shield', status: 'unlocked', color: 'primary' },
+  foundation: { score: 85, status: 'unlocked', daysAgo: 18 },
+  neural: { score: 88, icon: 'psychology', status: 'unlocked', color: 'primary', daysAgo: 45 },
+  cardio: { score: 64, icon: 'ecg_heart', status: 'unlocked', color: 'warning', daysAgo: 7 },
+  gut: { score: 92, icon: 'spa', status: 'unlocked', color: 'primary', daysAgo: 12 },
+  hormone: { score: 45, icon: 'bloodtype', status: 'unlocked', color: 'alert', daysAgo: 15 },
+  immune: { score: 81, icon: 'shield', status: 'unlocked', color: 'primary', daysAgo: 75 },
   toxin: { icon: 'science', status: 'locked' },
   nutrient: { icon: 'medication', status: 'locked' },
   food: { icon: 'restaurant', status: 'locked' },
   genetics: { icon: 'genetics', status: 'locked' },
+};
+
+// ==================== FRESHNESS UTILITIES ====================
+// Calculate freshness state and color based on days since test
+const calculateFreshnessInfo = (daysAgo) => {
+  if (daysAgo <= 30) {
+    return { state: 'fresh', dotColor: '#4CAF50' };
+  } else if (daysAgo <= 60) {
+    return { state: 'aging', dotColor: '#FF9800' };
+  } else {
+    return { state: 'stale', dotColor: '#F44336' };
+  }
 };
 
 // ==================== GUT ZOOMER DETAILED DATA ====================
@@ -435,10 +447,10 @@ const WellnessMap = ({ onZoomerClick }) => {
   // Container is 380x420, center at (190, 210)
   // Satellite nodes overflow the container but we use overflow-visible
   return (
-    <div 
+    <div
       className="relative scale-[0.85] sm:scale-100"
-      style={{ 
-        width: '380px', 
+      style={{
+        width: '380px',
         height: '420px',
         overflow: 'visible'
       }}
@@ -457,72 +469,88 @@ const WellnessMap = ({ onZoomerClick }) => {
       </svg>
 
       {/* Center - Foundation (at 190, 210) */}
-      <div 
+      <div
         className="absolute z-30 group cursor-pointer"
         style={{ left: '190px', top: '210px', transform: 'translate(-50%, -50%)' }}
         onClick={() => onZoomerClick('foundation')}
       >
         <div className="relative w-28 h-32 transition-transform group-hover:scale-105 duration-300">
           <div className="absolute inset-0 blur-xl rounded-full animate-pulse" style={{ background: 'rgba(13, 242, 128, 0.2)' }}></div>
-          <div 
+          <div
             className="absolute inset-0 p-[2px]"
-            style={{ 
+            style={{
               background: 'linear-gradient(to bottom right, #0df280, rgba(13, 242, 128, 0.5), rgba(13, 242, 128, 0.1))',
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
             }}
           >
-            <div 
-              className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden"
-              style={{ 
+            <div
+              className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden px-2"
+              style={{
                 background: '#0a110e',
                 clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
               }}
             >
               <div className="absolute inset-0" style={{ background: 'rgba(13, 242, 128, 0.1)' }}></div>
               <span className="relative text-4xl font-extrabold tracking-tighter z-10" style={{ color: '#0df280' }}>85</span>
-              <span className="relative text-[9px] font-bold text-white uppercase tracking-widest mt-1 z-10">Foundation</span>
+              {/* Freshness Tag - positioned between score and label */}
+              <div
+                className="flex items-center gap-1 whitespace-nowrap z-10"
+                style={{ background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', padding: '1px 3px' }}
+              >
+                <span
+                  className="leading-none"
+                  style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#4CAF50' }}
+                ></span>
+                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: '#1a1a1a' }}>
+                  fresh
+                </span>
+                <span className="text-[5px] leading-none" style={{ color: '#666' }}>
+                  {zoomerData.foundation.daysAgo}d
+                </span>
+              </div>
+              <span className="relative text-[9px] font-bold text-white uppercase tracking-widest z-10">Foundation</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Neural - Top (at 190, 100) */}
-      <HexNode 
-        name="Neural" icon="psychology" score={88} color="primary"
+      <HexNode
+        name="Neural" icon="psychology" score={88} color="primary" daysAgo={zoomerData.neural.daysAgo}
         style={{ left: '190px', top: '100px' }}
         onClick={() => onZoomerClick('neural')}
       />
 
       {/* Cardio - Top Right (at 280, 155) */}
-      <HexNode 
-        name="Cardio" icon="ecg_heart" score={64} color="warning"
+      <HexNode
+        name="Cardio" icon="ecg_heart" score={64} color="warning" daysAgo={zoomerData.cardio.daysAgo}
         style={{ left: '280px', top: '155px' }}
         onClick={() => onZoomerClick('cardio')}
       />
 
       {/* Gut - Bottom Right (at 280, 265) */}
-      <HexNode 
-        name="Gut" icon="spa" score={92} color="primary"
+      <HexNode
+        name="Gut" icon="spa" score={92} color="primary" daysAgo={zoomerData.gut.daysAgo}
         style={{ left: '280px', top: '265px' }}
         onClick={() => onZoomerClick('gut')}
       />
 
       {/* Hormone - Bottom (at 190, 320) */}
-      <HexNode 
-        name="Hormone" icon="bloodtype" score={45} color="alert"
+      <HexNode
+        name="Hormone" icon="bloodtype" score={45} color="alert" daysAgo={zoomerData.hormone.daysAgo}
         style={{ left: '190px', top: '320px' }}
         onClick={() => onZoomerClick('hormone')}
       />
 
       {/* Immune - Bottom Left (at 100, 265) */}
-      <HexNode 
-        name="Immune" icon="shield" score={81} color="primary"
+      <HexNode
+        name="Immune" icon="shield" score={81} color="primary" daysAgo={zoomerData.immune.daysAgo}
         style={{ left: '100px', top: '265px' }}
         onClick={() => onZoomerClick('immune')}
       />
 
       {/* Toxin - Top Left (at 100, 155) - LOCKED */}
-      <HexNode 
+      <HexNode
         name="Toxin" icon="lock" locked
         style={{ left: '100px', top: '155px' }}
         onClick={() => onZoomerClick('toxin')}
@@ -530,21 +558,21 @@ const WellnessMap = ({ onZoomerClick }) => {
 
       {/* Satellite Nodes - these overflow the container symmetrically */}
       {/* Nutrient - Far Top */}
-      <HexNodeSmall 
+      <HexNodeSmall
         name="Nutrient"
         style={{ left: '190px', top: '5px' }}
         onClick={() => onZoomerClick('nutrient')}
       />
 
       {/* Food - Far Right (155px from center) */}
-      <HexNodeSmall 
+      <HexNodeSmall
         name="Food"
         style={{ left: '345px', top: '210px' }}
         onClick={() => onZoomerClick('food')}
       />
 
       {/* Genetics - Far Left (155px from center) */}
-      <HexNodeSmall 
+      <HexNodeSmall
         name="Genetics"
         style={{ left: '35px', top: '210px' }}
         onClick={() => onZoomerClick('genetics')}
@@ -554,47 +582,66 @@ const WellnessMap = ({ onZoomerClick }) => {
 };
 
 // Inner ring hexagon node
-const HexNode = ({ name, icon, score, color, locked, style, onClick }) => {
+const HexNode = ({ name, icon, score, color, locked, daysAgo, style, onClick }) => {
   const getColor = () => {
     if (locked) return { gradient: 'rgba(255,255,255,0.1)', icon: '#6b7280', text: '#9ca3af' };
     if (color === 'warning') return { gradient: 'rgba(242, 201, 76, 0.6)', icon: '#F2C94C', text: '#F2C94C', scoreBg: 'rgba(242, 201, 76, 0.2)', scoreBorder: 'rgba(242, 201, 76, 0.3)' };
     if (color === 'alert') return { gradient: 'rgba(255, 75, 75, 0.6)', icon: '#FF4B4B', text: '#FF4B4B', scoreBg: 'rgba(255, 75, 75, 0.2)', scoreBorder: 'rgba(255, 75, 75, 0.3)' };
     return { gradient: 'rgba(13, 242, 128, 0.6)', icon: '#0df280', text: '#0df280', scoreBg: 'rgba(13, 242, 128, 0.2)', scoreBorder: 'rgba(13, 242, 128, 0.3)' };
   };
-  
+
   const colors = getColor();
-  
+  const freshnessInfo = !locked && daysAgo !== undefined ? calculateFreshnessInfo(daysAgo) : null;
+
   return (
-    <div 
+    <div
       className={`absolute z-20 group ${locked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       style={{ ...style, transform: 'translate(-50%, -50%)' }}
       onClick={onClick}
     >
       <div className={`relative w-24 h-28 transition-transform ${!locked && 'group-hover:scale-105'} duration-300 ${locked ? 'opacity-70 hover:opacity-100' : ''}`}>
-        <div 
+        <div
           className="absolute inset-0 p-[1px]"
-          style={{ 
+          style={{
             background: locked ? 'rgba(255,255,255,0.1)' : `linear-gradient(to bottom, ${colors.gradient}, transparent)`,
             clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
           }}
         >
-          <div 
-            className="w-full h-full backdrop-blur-md flex flex-col items-center justify-center"
-            style={{ 
+          <div
+            className="w-full h-full backdrop-blur-md flex flex-col items-center justify-center relative px-2"
+            style={{
               background: locked ? 'rgba(16, 24, 20, 0.9)' : 'rgba(27, 39, 33, 0.8)',
               clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
             }}
           >
-            <span 
-              className="material-symbols-outlined mb-1" 
-              style={{ fontSize: '24px', color: colors.icon }}
+            <span
+              className="material-symbols-outlined mb-0.5"
+              style={{ fontSize: '20px', color: colors.icon }}
             >
               {icon}
             </span>
-            <span className={`text-[10px] font-bold ${locked ? 'text-gray-400' : 'text-white'}`}>{name}</span>
+            {/* Freshness Tag - positioned between icon and name */}
+            {freshnessInfo && (
+              <div
+                className="flex items-center gap-1 whitespace-nowrap"
+                style={{ background: 'rgba(255, 255, 255, 0.9)', borderRadius: '4px', padding: '1px 3px' }}
+              >
+                <span
+                  className="leading-none"
+                  style={{ width: '4px', height: '4px', borderRadius: '50%', background: freshnessInfo.dotColor }}
+                ></span>
+                <span className="text-[5px] font-medium uppercase leading-none" style={{ color: '#1a1a1a' }}>
+                  {freshnessInfo.state}
+                </span>
+                <span className="text-[5px] leading-none" style={{ color: '#666' }}>
+                  {daysAgo}d
+                </span>
+              </div>
+            )}
+            <span className={`text-[9px] font-bold ${locked ? 'text-gray-400' : 'text-white'}`}>{name}</span>
             {!locked && score && (
-              <div 
-                className="mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold"
+              <div
+                className="mt-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold"
                 style={{ background: colors.scoreBg, border: `1px solid ${colors.scoreBorder}`, color: colors.text }}
               >
                 {score}
