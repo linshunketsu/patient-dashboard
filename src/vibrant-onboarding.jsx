@@ -126,24 +126,22 @@ const StepProviderValue = ({ onNext, onBack }) => {
         backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.15) 0%, rgba(255, 251, 245, 0) 70%)'
       }}
     >
-      {/* Top App Bar */}
-      <div className="sticky top-0 z-10 flex items-center justify-between p-4 backdrop-blur-md" style={{ background: 'rgba(255, 255, 255, 0.8)', borderBottom: '1px solid rgba(74, 66, 56, 0.08)' }}>
-        <button
-          onClick={onBack}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition-all"
-          style={{ color: theme.colors.textMain }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>arrow_back</span>
-        </button>
-        <h2 className="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10" style={{ color: theme.colors.textMain }}>Provider Value</h2>
+      {/* Progress Indicators */}
+      <div className="flex w-full flex-row items-center justify-center gap-3 py-4">
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
       </div>
 
-      {/* Page Indicators */}
-      <div className="flex w-full flex-row items-center justify-center gap-2 py-2">
-        <div className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.2)' }}></div>
-        <div className="h-1.5 w-8 rounded-full" style={{ background: theme.colors.primary }}></div>
-        <div className="h-1.5 w-1.5 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.2)' }}></div>
-      </div>
+      {/* Back Button - Top Left */}
+      <button
+        onClick={onBack}
+        className="absolute top-4 left-4 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition-all"
+        style={{ color: theme.colors.textMain }}
+      >
+        <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>arrow_back</span>
+      </button>
 
       {/* Headline */}
       <div className="flex flex-col items-center px-6 pt-6 pb-2 text-center max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto">
@@ -284,13 +282,14 @@ const StepAccountSetup = ({ onNext, onBack, formData, setFormData }) => {
         backgroundImage: `radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 40%)`
       }}
     >
-      {/* Top App Bar */}
-      <div className="flex items-center p-4 pb-2 justify-between">
-        <button onClick={onBack} className="flex size-12 shrink-0 items-center cursor-pointer" style={{ color: theme.colors.textMain }}>
-          <span className="material-symbols-outlined text-2xl">arrow_back_ios</span>
-        </button>
-        <h2 className="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12" style={{ color: theme.colors.textMain }}>Step 2 of 4</h2>
-      </div>
+      {/* Back Button - Top Left */}
+      <button
+        onClick={onBack}
+        className="absolute top-4 left-4 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition-all"
+        style={{ color: theme.colors.textMain }}
+      >
+        <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>arrow_back</span>
+      </button>
 
       {/* Progress Indicators */}
       <div className="flex w-full flex-row items-center justify-center gap-3 py-4">
@@ -432,30 +431,22 @@ const StepProviderMatching = ({ onNext, onBack, selectedProvider, setSelectedPro
 
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden" style={{ background: theme.colors.backgroundLight }}>
-      {/* Header */}
-      <div 
-        className="flex items-center backdrop-blur-md p-4 pb-2 justify-between sticky top-0 z-30"
-        style={{ background: 'rgba(245, 248, 247, 0.8)' }}
-      >
-        <button 
-          onClick={onBack}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-          style={{ color: theme.colors.textMain }}
-        >
-          <span className="material-symbols-outlined">arrow_back_ios_new</span>
-        </button>
-        <h2 className="text-sm font-bold tracking-tight flex-1 text-center pr-10 uppercase opacity-60" style={{ color: theme.colors.textMain }}>
-          Find Care Near You
-        </h2>
+      {/* Progress Indicators */}
+      <div className="flex w-full flex-row items-center justify-center gap-3 py-4">
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
       </div>
 
-      {/* Progress Indicators */}
-      <div className="flex w-full flex-row items-center justify-center gap-2 py-2">
-        <div className="h-1 w-6 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.25)' }}></div>
-        <div className="h-1 w-6 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.25)' }}></div>
-        <div className="h-1 w-10 rounded-full" style={{ background: theme.colors.primary }}></div>
-        <div className="h-1 w-6 rounded-full bg-gray-200"></div>
-      </div>
+      {/* Back Button - Top Left */}
+      <button
+        onClick={onBack}
+        className="absolute top-4 left-4 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+        style={{ color: theme.colors.textMain }}
+      >
+        <span className="material-symbols-outlined">arrow_back</span>
+      </button>
 
       {/* Title */}
       <div className="px-5 pt-4 max-w-2xl md:max-w-3xl lg:max-w-5xl mx-auto w-full">
@@ -652,29 +643,22 @@ const StepScheduleConnection = ({ onNext, onBack, selectedProvider, selectedDate
       className="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24"
       style={{ background: theme.colors.backgroundLight }}
     >
-      {/* Header */}
-      <header
-        className="sticky top-0 z-20 w-full backdrop-blur-md border-b"
-        style={{ background: 'rgba(255, 255, 255, 0.85)', borderColor: 'rgba(74, 66, 56, 0.08)' }}
+      {/* Back Button - Top Left */}
+      <button
+        onClick={onBack}
+        className="absolute top-4 left-4 z-20 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95 transition-all"
+        style={{ color: theme.colors.textMain }}
       >
-        <div className="flex items-center justify-between p-4">
-          <button
-            onClick={onBack}
-            className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-            style={{ color: theme.colors.textMain }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>arrow_back</span>
-          </button>
-          <h2 className="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10" style={{ color: theme.colors.textMain }}>Schedule Connection</h2>
-        </div>
-        <div className="flex w-full flex-row items-center justify-center gap-2 pb-4">
-          <div className="h-1.5 w-8 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.3)' }}></div>
-          <div className="h-1.5 w-8 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.3)' }}></div>
-          <div className="h-1.5 w-8 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.3)' }}></div>
-          <div className="h-1.5 w-8 rounded-full" style={{ background: '#F59E0B', boxShadow: '0 0 15px -2px rgba(245, 158, 11, 0.5)' }}></div>
-          <div className="h-1.5 w-8 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
-        </div>
-      </header>
+        <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>arrow_back</span>
+      </button>
+
+      {/* Progress Indicators */}
+      <div className="flex w-full flex-row items-center justify-center gap-3 py-4">
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+        <div className="h-1.5 w-12 rounded-full" style={{ background: theme.colors.primary }}></div>
+      </div>
 
       <main className="flex flex-col gap-6 p-4 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         {/* Provider Card */}

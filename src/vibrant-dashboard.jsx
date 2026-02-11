@@ -60,6 +60,42 @@ const zoomerData = {
   genetics: { icon: 'genetics', status: 'locked' },
 };
 
+// ==================== ANCHOR TIMELINE DATA ====================
+// Anchor points are the reference tests used to update overall health scores
+const anchorTests = [
+  { id: 1, name: 'Foundation Zoomer', icon: 'biotech', date: new Date(2024, 11, 15), daysAgo: 57 },
+  { id: 2, name: 'Neural Zoomer', icon: 'psychology', date: new Date(2025, 0, 5), daysAgo: 36 },
+  { id: 3, name: 'Gut Zoomer', icon: 'spa', date: new Date(2025, 1, 12), daysAgo: 0 },
+];
+
+// Auto-suggest next test based on completion patterns and health priorities
+const getNextSuggestedTest = () => {
+  const completedTests = anchorTests.map(t => t.name.toLowerCase());
+  const suggestions = [
+    { name: 'Hormone Zoomer', icon: 'bloodtype', reason: 'Recommended based on Foundation results' },
+    { name: 'Immune Zoomer', icon: 'shield', reason: 'Seasonal immune support' },
+    { name: 'Cardio Zoomer', icon: 'ecg_heart', reason: 'Heart health follow-up' },
+  ];
+  // Return first suggestion not yet completed
+  return suggestions.find(s => !completedTests.includes(s.name.toLowerCase())) || suggestions[0];
+};
+
+// Format date to short form (e.g., "Jan 15")
+const formatAnchorDate = (date) => {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[date.getMonth()]} ${date.getDate()}`;
+};
+
+// Calculate days until next scheduled test
+const getDaysUntilTest = (scheduledDate) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  scheduledDate.setHours(0, 0, 0, 0);
+  const diffTime = scheduledDate - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays > 0 ? diffDays : 0;
+};
+
 // ==================== FRESHNESS UTILITIES ====================
 // Calculate freshness state and color based on days since test
 const calculateFreshnessInfo = (daysAgo) => {
@@ -716,42 +752,69 @@ const HexNodeSmall = ({ name, style, onClick }) => {
 };
 
 // ==================== HEALTH JOURNEY TIMELINE ====================
-const HealthJourneyTimeline = () => {
-  const milestones = [
-    { date: 'Sep 01', label: 'Start', status: 'past' },
-    { date: 'Sep 15', label: 'Biomarkers', status: 'completed' },
-    { date: 'Oct 24', label: 'Full Panel', status: 'current' },
-    { date: 'Nov 12', label: 'Check-up', status: 'future' },
-    { date: 'Dec 01', label: 'Retest', status: 'future' },
-  ];
+// ==================== ANCHOR TIMELINE ====================
+const AnchorTimeline = () => {
+  const nextTest = getNextSuggestedTest();
+  // Schedule next test 14 days from now for demo
+  const nextTestDate = new Date();
+  nextTestDate.setDate(nextTestDate.getDate() + 14);
+  const daysUntil = getDaysUntilTest(nextTestDate);
 
   return (
     <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
       <div className="flex items-center min-w-max relative px-4">
-        <div className="absolute left-0 right-10 top-[15px] h-[1px] bg-gradient-to-r from-transparent via-[rgba(74,66,56,0.1)] to-transparent w-full"></div>
-        {milestones.map((milestone, index) => (
+        {/* Timeline connector line */}
+        <div className="absolute left-4 right-6 top-[15px] h-[1px] bg-gradient-to-r from-transparent via-[rgba(20,184,166,0.2)] to-[rgba(245,158,11,0.3)] w-full"></div>
+
+        {/* Past anchor points */}
+        {anchorTests.map((anchor, index) => (
           <div
-            key={index}
-            className={`relative flex flex-col items-center mr-10 group transition-all ${
-              milestone.status === 'past' ? 'opacity-50 grayscale hover:grayscale-0' :
-              milestone.status === 'future' ? 'opacity-40' : ''
-            }`}
+            key={anchor.id}
+            className="relative flex flex-col items-center mr-10 group transition-all"
           >
             <div className="relative z-10 mb-2">
-              {milestone.status === 'current' ? (
-                <div className="size-3 rounded-full border flex items-center justify-center" style={{ background: '#FFFFFF', borderColor: '#F59E0B', boxShadow: '0 0 15px rgba(245, 158, 11, 0.5)' }}>
-                  <div className="size-1.5 rounded-full animate-pulse" style={{ background: '#FFD700' }}></div>
+              {/* Most recent anchor gets special styling */}
+              {index === anchorTests.length - 1 ? (
+                <div className="size-4 rounded-full border-2 flex items-center justify-center" style={{ background: '#F59E0B', borderColor: '#F59E0B', boxShadow: '0 0 12px rgba(245, 158, 11, 0.5)' }}>
+                  <div className="size-1.5 rounded-full" style={{ background: '#FFFFFF' }}></div>
                 </div>
-              ) : milestone.status === 'completed' ? (
-                <div className="size-2 rounded-full" style={{ background: '#FFD700', boxShadow: '0 0 10px rgba(244, 202, 37, 0.3)' }}></div>
               ) : (
-                <div className="size-2 rounded-full border" style={{ background: '#FFFFFF', borderColor: milestone.status === 'past' ? 'rgba(244, 202, 37, 0.4)' : 'rgba(74, 66, 56, 0.15)' }}></div>
+                <div className="size-2.5 rounded-full" style={{ background: '#14B8A6', boxShadow: '0 0 8px rgba(20, 184, 166, 0.3)' }}></div>
               )}
             </div>
-            <span className="text-[9px] font-medium" style={{ color: milestone.status === 'current' || milestone.status === 'completed' ? theme.colors.primary : theme.colors.textLight }}>{milestone.date}</span>
-            <span className="text-[9px] font-bold mt-0.5" style={{ color: milestone.status === 'current' ? theme.colors.textMain : milestone.status === 'completed' ? theme.colors.textMain : theme.colors.textLight }}>{milestone.label}</span>
+            <span className="text-[9px] font-medium" style={{ color: index === anchorTests.length - 1 ? theme.colors.primary : theme.colors.textLight }}>
+              {formatAnchorDate(anchor.date)}
+            </span>
+            <span className="text-[9px] font-bold mt-0.5" style={{ color: index === anchorTests.length - 1 ? theme.colors.textMain : theme.colors.textLight }}>
+              {anchor.name}
+            </span>
           </div>
         ))}
+
+        {/* Next anchor point */}
+        <div className="relative flex flex-col items-center group transition-all">
+          <div className="relative z-10 mb-2">
+            <div
+              className="size-4 rounded-full border-2 border-dashed flex items-center justify-center"
+              style={{ borderColor: 'rgba(245, 158, 11, 0.5)', background: 'rgba(245, 158, 11, 0.08)' }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '12px', color: '#F59E0B' }}>schedule</span>
+            </div>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[8px] font-medium uppercase tracking-wider" style={{ color: theme.colors.textLight }}>
+              Next
+            </span>
+            <span className="text-[9px] font-bold" style={{ color: theme.colors.primary }}>
+              {nextTest.name}
+            </span>
+            <div className="flex items-center gap-1 mt-0.5 px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.12)' }}>
+              <span className="text-[8px] font-medium" style={{ color: '#F59E0B' }}>
+                {daysUntil} days
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1196,12 +1259,12 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
         </button>
       </header>
 
-      {/* Health Journey Timeline */}
+      {/* Anchor Timeline */}
       <div className="relative z-20 w-full pt-1 pb-1 pl-4 shrink-0">
         <div className="flex items-center justify-between pr-6 mb-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest pl-2" style={{ color: theme.colors.textLight }}>Health Journey</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest pl-2" style={{ color: theme.colors.textLight }}>Anchor Timeline</span>
         </div>
-        <HealthJourneyTimeline />
+        <AnchorTimeline />
       </div>
 
       {/* Wellness Map with Floating Notification */}
