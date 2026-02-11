@@ -3,7 +3,10 @@ import foundationZoomerData from '../data/foundation-zoomer-data.json';
 import ReferenceRangeIndicator from './ReferenceRangeIndicator.jsx';
 import ProgressBarIndicator from './ProgressBarIndicator.jsx';
 import ViewToggle from './ViewToggle.jsx';
+import TrendChart from './TrendChart.jsx';
+import TrendSparkline from './TrendSparkline.jsx';
 import { getReferenceRange, calculateStatus } from '../data/reference-ranges-config.js';
+import { getHistoricalDataForMarker } from '../data/demo-trend-data.js';
 
 // Theme tokens matching the dashboard - Amber + Teal Color System
 const theme = {
@@ -490,13 +493,23 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                           </p>
                         </div>
                         <div className="text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <span className="block font-bold" style={{ color: theme.colors.textMain }}>{marker.value}</span>
-                            {marker.unit && <span className="text-xs" style={{ color: theme.colors.textLight }}>{marker.unit}</span>}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center justify-end gap-1">
+                                <span className="block font-bold" style={{ color: theme.colors.textMain }}>{marker.value}</span>
+                                {marker.unit && <span className="text-xs" style={{ color: theme.colors.textLight }}>{marker.unit}</span>}
+                              </div>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
+                                {marker.status}
+                              </span>
+                            </div>
+                            {/* Trend Sparkline Indicator */}
+                            <TrendSparkline
+                              historyData={getHistoricalDataForMarker(marker.name, parseFloat(marker.value))}
+                              currentStatus={marker.status}
+                              size="small"
+                            />
                           </div>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
-                            {marker.status}
-                          </span>
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -531,7 +544,17 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
 
                     {/* Expanded recommendations */}
                     {isExpanded && (
-                      <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
+                      <div className="px-4 pb-4 space-y-4 border-t border-white/5 pt-3">
+                        {/* Trend Chart */}
+                        <TrendChart
+                          markerName={marker.name}
+                          historyData={getHistoricalDataForMarker(marker.name, parseFloat(marker.value))}
+                          referenceRange={marker.referenceRange}
+                          unit={marker.unit}
+                          currentStatus={marker.status}
+                          compact={true}
+                        />
+
                         {/* Supplements */}
                         {categories[selectedCategory]?.supplements && categories[selectedCategory].supplements.length > 0 && (
                           <div>
@@ -610,10 +633,20 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="block font-bold text-white">{metric.value}</span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
-                            {metric.status}
-                          </span>
+                          <div className="flex flex-col items-end gap-1">
+                            <div className="flex items-center gap-1">
+                              <span className="block font-bold text-white">{metric.value}</span>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: statusStyles.bg, color: statusStyles.color }}>
+                                {metric.status}
+                              </span>
+                            </div>
+                            {/* Trend Sparkline Indicator */}
+                            <TrendSparkline
+                              historyData={getHistoricalDataForMarker(metric.name, parseFloat(metric.value))}
+                              currentStatus={metric.status}
+                              size="small"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="grid grid-cols-[1fr_60px] gap-3 items-center">
@@ -644,7 +677,17 @@ const FoundationZoomerDetail = ({ zoomer, onBack }) => {
 
                     {/* Expanded recommendations */}
                     {isExpanded && (
-                      <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
+                      <div className="px-4 pb-4 space-y-4 border-t border-white/5 pt-3">
+                        {/* Trend Chart */}
+                        <TrendChart
+                          markerName={metric.name}
+                          historyData={getHistoricalDataForMarker(metric.name, parseFloat(metric.value))}
+                          referenceRange={metric.referenceRange}
+                          unit={metric.unit}
+                          currentStatus={metric.status}
+                          compact={true}
+                        />
+
                         {/* Supplements */}
                         {categoryData?.supplements && categoryData.supplements.length > 0 && (
                           <div>
