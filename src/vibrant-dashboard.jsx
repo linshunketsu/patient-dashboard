@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import FoundationZoomerDetail from './components/FoundationZoomerDetail.jsx';
 
 // ==================== DESIGN TOKENS ====================
@@ -48,7 +48,7 @@ const theme = {
 
 // ==================== ZOOMER DATA ====================
 const zoomerData = {
-  foundation: { score: 85, status: 'unlocked', daysAgo: 18 },
+  foundation: { score: 68, status: 'unlocked', daysAgo: 18 }, // Changed to 68 to match user example
   neural: { score: 88, icon: 'psychology', status: 'unlocked', color: 'primary', daysAgo: 45 },
   cardio: { score: 64, icon: 'ecg_heart', status: 'unlocked', color: 'warning', daysAgo: 7 },
   gut: { score: 92, icon: 'spa', status: 'unlocked', color: 'primary', daysAgo: 12 },
@@ -106,6 +106,59 @@ const calculateFreshnessInfo = (daysAgo) => {
   } else {
     return { state: 'stale', dotColor: theme.colors.statusAlert }; // Rose
   }
+};
+
+// ==================== ROADMAP DATA ====================
+// Generate improvement suggestions based on lowest-scoring categories
+const getImprovementSuggestions = (scores) => {
+  // Map categories to improvements
+  const improvementMap = {
+    gut: { icon: 'spa', title: 'Reduced Bloating', description: 'Less digestive discomfort' },
+    hormone: { icon: 'bolt', title: 'Higher Energy', description: 'More consistent daily energy' },
+    neural: { icon: 'bedtime', title: 'Better Sleep', description: 'Improved sleep quality' },
+    cardio: { icon: 'favorite', title: 'Heart Health', description: 'Better cardiovascular function' },
+    immune: { icon: 'shield', title: 'Immunity', description: 'Stronger immune response' },
+    foundation: { icon: 'stars', title: 'Overall Wellness', description: 'Improved foundational health' },
+  };
+
+  // Find categories with scores below target
+  const targetScore = 85;
+  const lowCategories = Object.entries(scores)
+    .filter(([key, data]) => data.score !== undefined && data.score < targetScore)
+    .sort((a, b) => a[1].score - b[1].score);
+
+  // Return top 3 areas to improve
+  return lowCategories
+    .slice(0, 3)
+    .map(([key, _]) => improvementMap[key] || improvementMap.foundation);
+};
+
+// Calculate score label based on value
+const getScoreLabel = (score) => {
+  if (score >= 85) return 'Optimal Wellness';
+  if (score >= 70) return 'Good Health';
+  if (score >= 55) return 'Moderate Inflammation';
+  if (score >= 40) return 'High Inflammation';
+  return 'Critical Attention Needed';
+};
+
+// Roadmap data - personalized based on user's scores
+const getRoadmapData = (scores) => {
+  const currentScore = scores.foundation?.score || 68;
+  const targetScore = 85;
+  const nextTestDate = new Date(2025, 9, 15); // October 15th, 2025
+  const daysUntilTest = getDaysUntilTest(nextTestDate);
+
+  return {
+    currentScore,
+    targetScore,
+    scoreLabel: getScoreLabel(currentScore),
+    targetLabel: 'Optimal Wellness',
+    nextTestDate,
+    daysUntilTest,
+    expectedImprovements: getImprovementSuggestions(scores),
+    actionPlanSummary: `${scores.foundation?.score < targetScore ? '12' : '8'} daily tasks across ${getImprovementSuggestions(scores).length} focus areas`,
+  };
 };
 
 // ==================== GUT ZOOMER DETAILED DATA ====================
@@ -1225,10 +1278,48 @@ const DailyCheckIn = ({ onBack }) => {
 };
 
 // ==================== MAIN DASHBOARD ====================
-const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
+const MainDashboard = ({ onZoomerClick, onCheckInClick, roadmapData }) => {
+  const [sheetState, setSheetState] = useState('default'); // 'default' | 'scores-meaning'
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [currentY, setCurrentY] = useState(0);
+  const sheetRef = useRef(null);
+
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    setStartY(e.touches ? e.touches[0].clientY : e.clientY);
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging) return;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+    setCurrentY(y - startY);
+  };
+
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    const dragDistance = startY ? (currentY / Math.abs(startY || 1)) * -1 : 0;
+
+    // If dragged up significantly, expand to scores-meaning
+    if (dragDistance > 50 && sheetState === 'default') {
+      setSheetState('scores-meaning');
+    }
+    // If dragged down significantly, collapse to default
+    else if (dragDistance < -50 && sheetState === 'scores-meaning') {
+      setSheetState('default');
+    }
+
+    setCurrentY(0);
+  };
+
+  const toggleSheetState = () => {
+    setSheetState(sheetState === 'default' ? 'scores-meaning' : 'default');
+  };
+
   return (
     <div
-      className="h-screen w-full flex flex-col relative overflow-y-auto"
+      className="h-screen w-full flex flex-col relative overflow-hidden"
       style={{
         color: theme.colors.textMain,
         background: theme.colors.backgroundLight,
@@ -1288,59 +1379,188 @@ const MainDashboard = ({ onZoomerClick, onCheckInClick }) => {
         </div>
       </main>
 
-      {/* Bottom Sheet */}
+      {/* Expandable Bottom Sheet */}
       <div
-        className="relative z-20 w-full rounded-t-3xl border-t pb-8"
+        ref={sheetRef}
+        className={`relative z-20 w-full rounded-t-3xl border-t transition-all duration-300 ease-out ${isDragging ? '' : 'transition-transform'}`}
         style={{
           background: 'rgba(255, 255, 255, 0.7)',
           backdropFilter: 'blur(16px)',
           borderColor: 'rgba(255,255,255,0.5)',
-          boxShadow: '0 -4px 24px rgba(74, 66, 56, 0.08)'
+          boxShadow: '0 -4px 24px rgba(74, 66, 56, 0.08)',
+          maxHeight: sheetState === 'scores-meaning' ? '85vh' : 'auto',
+          transform: isDragging ? `translateY(${currentY}px)` : 'translateY(0)',
         }}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
       >
-        <div className="flex justify-center pt-3 pb-1">
+        {/* Drag Handle */}
+        <div
+          className="flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
+          onClick={toggleSheetState}
+        >
           <div className="h-1 w-12 rounded-full" style={{ background: 'rgba(74, 66, 56, 0.15)' }}></div>
         </div>
-        <div className="px-4 md:px-6 pt-2 max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold" style={{ color: theme.colors.textMain }}>Trend & Activity</h2>
-            <span className="text-xs font-medium" style={{ color: theme.colors.textLight }}>Today, 24 Oct</span>
-          </div>
 
-          {/* Cards Grid - Responsive */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <TrendCard />
-            <WearableCard />
-            {/* Extra cards for larger screens */}
-            <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
-              <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Daily Check-in</span>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">🔥</span>
-                <span className="text-lg font-bold" style={{ color: theme.colors.textMain }}>7 Day</span>
+        <div className="px-4 md:px-6 pt-2 max-w-4xl mx-auto overflow-y-auto" style={{ maxHeight: sheetState === 'scores-meaning' ? 'calc(85vh - 60px)' : 'auto' }}>
+          {/* DEFAULT STATE: Trend & Activity */}
+          {sheetState === 'default' && (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold" style={{ color: theme.colors.textMain }}>Trend & Activity</h2>
+                <span className="text-xs font-medium" style={{ color: theme.colors.textLight }}>Today, 24 Oct</span>
               </div>
-              <span className="text-xs" style={{ color: theme.colors.textLight }}>Streak</span>
-            </div>
-            <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
-              <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Next Appointment</span>
-              <span className="text-sm font-bold block" style={{ color: theme.colors.textMain }}>Dr. Chen</span>
-              <span className="text-xs" style={{ color: theme.colors.textLight }}>Nov 12, 10:00 AM</span>
-            </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onCheckInClick}
-              className="flex-1 h-14 rounded-xl flex items-center justify-center gap-2 font-bold text-base transition-all active:scale-95 duration-200"
-              style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D1B00', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>qr_code_scanner</span>
-              Daily Goals
-            </button>
-            <button className="size-14 rounded-xl flex items-center justify-center transition-colors" style={{ background: '#F5F0E8', color: theme.colors.textMain }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>history</span>
-            </button>
-          </div>
+              {/* Cards Grid - Responsive */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <TrendCard />
+                <WearableCard />
+                {/* Extra cards for larger screens */}
+                <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+                  <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Daily Check-in</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🔥</span>
+                    <span className="text-lg font-bold" style={{ color: theme.colors.textMain }}>7 Day</span>
+                  </div>
+                  <span className="text-xs" style={{ color: theme.colors.textLight }}>Streak</span>
+                </div>
+                <div className="hidden md:block rounded-2xl p-4 border relative overflow-hidden shadow-sm" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+                  <span className="text-[9px] font-bold uppercase tracking-wider block mb-2" style={{ color: theme.colors.textLight }}>Next Appointment</span>
+                  <span className="text-sm font-bold block" style={{ color: theme.colors.textMain }}>Dr. Chen</span>
+                  <span className="text-xs" style={{ color: theme.colors.textLight }}>Nov 12, 10:00 AM</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={toggleSheetState}
+                  className="flex-1 min-w-0 h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-95 duration-200 border px-3"
+                  style={{
+                    background: '#FFFFFF',
+                    borderColor: 'rgba(245, 158, 11, 0.25)',
+                    color: theme.colors.textMain,
+                    boxShadow: '0 2px 8px rgba(245, 158, 11, 0.15)'
+                  }}
+                >
+                  <span className="material-symbols-outlined shrink-0" style={{ fontSize: '20px', color: theme.colors.primary }}>insights</span>
+                  <span className="truncate">What Your Scores Mean</span>
+                </button>
+                <button
+                  onClick={onCheckInClick}
+                  className="flex-1 h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-95 duration-200"
+                  style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D1B00', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>qr_code_scanner</span>
+                  Daily Goals
+                </button>
+                <button className="size-12 rounded-xl flex items-center justify-center transition-colors" style={{ background: '#F5F0E8', color: theme.colors.textMain }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>history</span>
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* SCORES-MEANING STATE: Score Progress & Expected Improvements */}
+          {sheetState === 'scores-meaning' && (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold" style={{ color: theme.colors.textMain }}>Your Score Progress</h2>
+                  <p className="text-xs" style={{ color: theme.colors.textLight }}>Track your journey to optimal wellness</p>
+                </div>
+                <button
+                  onClick={toggleSheetState}
+                  className="size-8 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(74, 66, 56, 0.08)' }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px', color: theme.colors.textLight }}>expand_more</span>
+                </button>
+              </div>
+
+              {/* Score Progress Card */}
+              <div className="rounded-2xl p-5 border mb-6" style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: theme.colors.textLight }}>Current Score</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-extrabold" style={{ color: theme.colors.primary }}>{roadmapData.currentScore}</span>
+                      <span className="text-sm font-medium" style={{ color: theme.colors.textLight }}>/ 100</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] font-bold uppercase tracking-wider block mb-1" style={{ color: theme.colors.textLight }}>Target</span>
+                    <span className="text-2xl font-bold" style={{ color: theme.colors.teal }}>{roadmapData.targetScore}</span>
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="relative h-3 w-full rounded-full overflow-hidden mb-3" style={{ background: 'rgba(74, 66, 56, 0.1)' }}>
+                  <div
+                    className="absolute left-0 top-0 bottom-0 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${(roadmapData.currentScore / roadmapData.targetScore) * 100}%`,
+                      background: 'linear-gradient(90deg, #F59E0B, #00BFA5)'
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-medium" style={{ color: theme.colors.textMain }}>{roadmapData.scoreLabel}</span>
+                  <span className="text-[10px]" style={{ color: theme.colors.textLight }}>Target: {roadmapData.targetLabel}</span>
+                </div>
+              </div>
+
+              {/* Expected Improvements */}
+              <div className="mb-6">
+                <h3 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: theme.colors.textLight }}>Expected Improvements</h3>
+                <div className="space-y-3">
+                  {roadmapData.expectedImprovements.map((improvement, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 rounded-xl border"
+                      style={{ background: '#FFFFFF', borderColor: 'rgba(74, 66, 56, 0.08)' }}
+                    >
+                      <div className="size-10 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(245, 158, 11, 0.15)' }}>
+                        <span className="material-symbols-outlined" style={{ color: theme.colors.primary, fontSize: '20px' }}>{improvement.icon}</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-bold block" style={{ color: theme.colors.textMain }}>{improvement.title}</span>
+                        <span className="text-xs" style={{ color: theme.colors.textLight }}>{improvement.description}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Next Test Info */}
+              <div className="rounded-2xl p-4 border mb-6" style={{ background: 'rgba(0, 191, 165, 0.08)', borderColor: 'rgba(0, 191, 165, 0.2)' }}>
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(0, 191, 165, 0.15)' }}>
+                    <span className="material-symbols-outlined" style={{ color: theme.colors.teal, fontSize: '20px' }}>event</span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-medium block" style={{ color: theme.colors.textLight }}>Next test in</span>
+                    <span className="text-sm font-bold" style={{ color: theme.colors.textMain }}>{roadmapData.daysUntilTest} days</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <button
+                onClick={onCheckInClick}
+                className="w-full h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all active:scale-95 duration-200"
+                style={{ background: 'linear-gradient(135deg, #FFA726 0%, #F59E0B 50%, #FF7043 100%)', color: '#2D1B00', boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)' }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>checklist</span>
+                View Daily Action Plan
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -1352,6 +1572,9 @@ export default function VibrantDashboard() {
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, zoomer-detail, check-in, locked-learn-more
   const [selectedZoomer, setSelectedZoomer] = useState(null);
   const [lockedModalZoomer, setLockedModalZoomer] = useState(null);
+
+  // Get roadmap data based on current scores
+  const roadmapData = getRoadmapData(zoomerData);
 
   const handleZoomerClick = useCallback((zoomer) => {
     if (zoomerData[zoomer].status === 'locked') {
@@ -1409,9 +1632,10 @@ export default function VibrantDashboard() {
       {/* Responsive Container */}
       <div className="w-full min-h-screen">
         {currentView === 'dashboard' && (
-          <MainDashboard 
-            onZoomerClick={handleZoomerClick} 
+          <MainDashboard
+            onZoomerClick={handleZoomerClick}
             onCheckInClick={handleCheckInClick}
+            roadmapData={roadmapData}
           />
         )}
         {currentView === 'zoomer-detail' && (
@@ -1424,8 +1648,8 @@ export default function VibrantDashboard() {
           <DailyCheckIn onBack={handleBack} />
         )}
         {currentView === 'locked-learn-more' && (
-          <LockedZoomerLearnMore 
-            zoomer={selectedZoomer} 
+          <LockedZoomerLearnMore
+            zoomer={selectedZoomer}
             onBack={handleBack}
           />
         )}
@@ -1433,7 +1657,7 @@ export default function VibrantDashboard() {
 
       {/* Locked Zoomer Modal - renders on top of dashboard */}
       {lockedModalZoomer && (
-        <LockedZoomerModal 
+        <LockedZoomerModal
           zoomer={lockedModalZoomer}
           onClose={handleCloseLockedModal}
           onLearnMore={handleLearnMore}
